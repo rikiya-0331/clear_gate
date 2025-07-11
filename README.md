@@ -160,3 +160,6 @@ ClearGateは今後も「初めての海外旅行でも安心して使える」�
 - PWA導入に必要なService Workerとmanifest.jsonの基礎（未）
 
 AIを用いて技術の検証を行なってから、実装に加える予定
+
+## ■ 画面遷移図
+https://www.figma.com/design/lB2xtaGdEbdXdZbgvTkG29/Clear-Gate%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3?node-id=0-1&t=Ig34ouRW5dxGrY5M-1
