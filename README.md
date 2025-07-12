@@ -171,3 +171,8 @@ AIを用いて技術の検証を行なってから、実装に加える予定
 ## ■ 今後の拡張機能（予定）
 
 - PWA 対応（オフラインキャッシュ／Service Worker / manifest.json）
+
+---
+
+## ■ 画面遷移図
+https://www.figma.com/design/lB2xtaGdEbdXdZbgvTkG29/Clear-Gate%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3?node-id=57-312&t=nVP7BJXdwYnuL6ib-1
