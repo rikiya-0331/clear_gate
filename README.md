@@ -197,3 +197,76 @@ AIを用いて技術の検証を行なってから、実装に加える予定
 
 ## ■ 画面遷移図
 https://www.figma.com/design/lB2xtaGdEbdXdZbgvTkG29/Clear-Gate%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3?node-id=57-312&t=nVP7BJXdwYnuL6ib-1
+
+---
+
+## ■ ER図
+
+```mermaid
+erDiagram
+  USERS ||--o{ FAVORITES        : お気に入り登録
+  USERS ||--o{ QUIZ_HISTORIES   : 履歴
+  CATEGORIES ||--o{ QUESTIONS    : 質問一覧
+  CATEGORIES ||--o{ QUIZ_HISTORIES: 履歴カテゴリ
+  QUESTIONS ||--o{ FAVORITES     : お気に入り
+  QUESTIONS ||--o{ QUIZ_RESULTS  : 結果
+  QUIZ_HISTORIES ||--o{ QUIZ_RESULTS: 詳細結果
+
+  USERS {
+    int      id                        PK
+    string   name
+    string   email
+    string   encrypted_password
+    datetime reset_password_sent_at
+    string   reset_password_token
+    datetime remember_created_at
+    datetime confirmation_sent_at
+    string   confirmation_token
+    datetime confirmed_at
+    string   unconfirmed_email
+    datetime created_at
+    datetime updated_at
+  }
+
+  CATEGORIES {
+    int      id   PK
+    string   name
+    datetime created_at
+    datetime updated_at
+  }
+
+  QUESTIONS {
+    int      id           PK
+    int      category_id  FK
+    text     english_text
+    text     japanese_text
+    text     explanation
+    datetime created_at
+    datetime updated_at
+  }
+
+  FAVORITES {
+    int      id           PK
+    int      user_id      FK
+    int      question_id  FK
+    datetime created_at
+    datetime updated_at
+  }
+
+  QUIZ_HISTORIES {
+    int      id           PK
+    int      user_id      FK
+    int      category_id  FK
+    int      score                 "正解数"
+    datetime created_at          "実施日時"
+    datetime updated_at
+  }
+
+  QUIZ_RESULTS {
+    int      id                PK
+    int      quiz_history_id   FK
+    int      question_id       FK
+    boolean  correct            "正誤フラグ"
+    datetime created_at
+    datetime updated_at
+  }
