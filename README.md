@@ -257,8 +257,8 @@ erDiagram
     int      id           PK
     int      user_id      FK
     int      category_id  FK
-    int      score                 <<正解数>>
-    datetime created_at          <<実施日時>>
+    int      score                 "正解数"
+    datetime created_at          "実施日時"
     datetime updated_at
   }
 
@@ -266,7 +266,7 @@ erDiagram
     int      id                PK
     int      quiz_history_id   FK
     int      question_id       FK
-    boolean  correct            <<正誤フラグ>>
+    boolean  correct            "正誤フラグ"
     datetime created_at
     datetime updated_at
   }
