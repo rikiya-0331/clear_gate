@@ -112,6 +112,8 @@
 
 ## ■ 実装方針（MVP）
 
+## ■ 実装方針（MVP）
+
 - `db/seeds.rb` を用いて、カテゴリ付き英日Q&Aを一括登録（約50問）
 - `Category` モデルと `Question` モデルを `has_many / belongs_to` で紐付け
 - `ransack` を利用し、日本語・英語キーワードによる曖昧検索を実装
@@ -120,15 +122,14 @@
 - `devise` を導入し、`User` モデルで新規登録／ログイン／ログアウト機能を実装
 - `devise` のパスワードリセット機能を利用し、メール認証フローでのメールアドレス・パスワード変更を実装
 - `Favorite` モデル（`user_id`, `question_id`）を用意し、ログインユーザーが質問をお気に入り登録／解除できる機能を実装
-- `QuizAttempt` モデルを作成し、クイズ実行時に以下を保存
-  - `created_at`（実施日時）
-  - `category_id`（カテゴリ）
-  - `score`（正解数）
-  - `details`（各問題の正誤を JSON 配列で保持）
+- **`QuizHistory` モデルと `QuizResult` モデルを作成し、クイズ実行時に以下を保存**
+  - **`QuizHistory` には `created_at`（実施日時）、`user_id`、`category_id`（カテゴリ）、`score`（正解数）を保存**
+  - **`QuizResult` には `quiz_history_id`、`question_id`、`correct`（正誤判定）を保存**
 - マイページに「過去のクイズ履歴一覧ページ」を設置
-  - `current_user.quiz_attempts` を日付降順で取得し、「実施日時」「カテゴリ」をテーブル表示
+  - **`current_user.quiz_histories` を日付降順で取得し、「実施日時」「カテゴリ」「正解数（スコア）」をテーブル表示**
 - クイズ履歴詳細ページを実装
-  - 対象の `QuizAttempt` から `score` と `details` を読み出し表示
+  - **対象の `QuizHistory` とそれに紐づく `QuizResult`s を読み出し表示**
+  - **各設問（`QuizResult`に紐づく`Question`）について、問題文、和訳、模範回答、ユーザーの正誤を表示**
   - 各設問に「解説を見る」リンクを配置し、`/questions/:id#explanation` 等で解説セクションへ遷移
 
 ---
@@ -215,15 +216,12 @@ erDiagram
   USERS {
     int      id                        PK
     string   name
-    string   email
-    string   encrypted_password
-    datetime reset_password_sent_at
-    string   reset_password_token
-    datetime remember_created_at
-    datetime confirmation_sent_at
-    string   confirmation_token
-    datetime confirmed_at
-    string   unconfirmed_email
+    string   email                     -- ログイン用
+    string   encrypted_password        -- 暗号化パスワード
+    string   reset_password_token      -- パスワードリセット用
+    datetime reset_password_sent_at    -- リセットメール送信日時
+    datetime remember_created_at       -- ログイン状態記憶
+    string   unconfirmed_email         -- 新メールアドレス（確認待ち）
     datetime created_at
     datetime updated_at
   }
@@ -240,7 +238,7 @@ erDiagram
     int      category_id  FK
     text     english_text
     text     japanese_text
-    text     explanation
+    text     sample_answer
     datetime created_at
     datetime updated_at
   }
