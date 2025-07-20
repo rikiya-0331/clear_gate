@@ -216,12 +216,12 @@ erDiagram
   USERS {
     int      id                        PK
     string   name
-    string   email                     -- ログイン用
-    string   encrypted_password        -- 暗号化パスワード
-    string   reset_password_token      -- パスワードリセット用
-    datetime reset_password_sent_at    -- リセットメール送信日時
-    datetime remember_created_at       -- ログイン状態記憶
-    string   unconfirmed_email         -- 新メールアドレス（確認待ち）
+    string   email                     "ログイン用"
+    string   encrypted_password        "暗号化パスワード"
+    string   reset_password_token      "パスワードリセット用"
+    datetime reset_password_sent_at    "リセットメール送信日時"
+    datetime remember_created_at       "ログイン状態記憶"
+    string   unconfirmed_email         "新メールアドレス（確認待ち）"
     datetime created_at
     datetime updated_at
   }
