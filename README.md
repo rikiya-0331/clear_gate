@@ -203,81 +203,81 @@ https://www.figma.com/design/lB2xtaGdEbdXdZbgvTkG29/Clear-Gate%E7%94%BB%E9%9D%A2
 
 ```mermaid
 erDiagram
-    USERS ||--o{ QUIZ_HISTORIES : has
-    USERS ||--o{ FAVORITES : has
-    QUESTIONS ||--o{ ANSWER_CHOICES : has
-    QUESTIONS ||--o{ QUIZ_RESULTS : has
-    QUESTIONS ||--o{ FAVORITES : has
-    CATEGORIES ||--o{ QUESTIONS : has
-    CATEGORIES ||--o{ QUIZ_HISTORIES : has
-    QUIZ_HISTORIES ||--o{ QUIZ_RESULTS : has
-    ANSWER_CHOICES ||--o{ QUIZ_RESULTS : selected
+    USERS ||--o{ FAVORITES        : お気に入り登録
+    USERS ||--o{ QUIZ_HISTORIES   : クイズ履歴
+    CATEGORIES ||--o{ QUESTIONS    : 所属質問
+    CATEGORIES ||--o{ QUIZ_HISTORIES: クイズカテゴリ
+    QUESTIONS ||--o{ ANSWER_CHOICES : 解答選択肢
+    QUESTIONS ||--o{ FAVORITES     : お気に入り対象
+    QUESTIONS ||--o{ QUIZ_RESULTS  : クイズ結果
+    QUIZ_HISTORIES ||--o{ QUIZ_RESULTS: 詳細結果
+    ANSWER_CHOICES ||--o{ QUIZ_RESULTS: 選択された回答
 
     USERS {
-        bigint id PK "ID"
-        string email "メールアドレス"
-        string encrypted_password "暗号化されたパスワード"
-        string reset_password_token "パスワードリセットトークン"
-        datetime reset_password_sent_at "パスワードリセット送信日時"
-        datetime remember_created_at "ログイン記憶日時"
-        datetime created_at "作成日時"
-        datetime updated_at "更新日時"
+        bigint   id                        PK "ID"
+        string   email                     "メールアドレス"
+        string   encrypted_password        "暗号化されたパスワード"
+        string   reset_password_token      "パスワードリセットトークン"
+        datetime reset_password_sent_at    "パスワードリセット送信日時"
+        datetime remember_created_at       "ログイン記憶日時"
+        datetime created_at
+        datetime updated_at
     }
 
     CATEGORIES {
-        bigint id PK "ID"
-        string name "カテゴリ名"
-        datetime created_at "作成日時"
-        datetime updated_at "更新日時"
+        bigint   id   PK "ID"
+        string   name "カテゴリ名"
+        datetime created_at
+        datetime updated_at
     }
 
     QUESTIONS {
-        bigint id PK "ID"
-        text title_jp "質問タイトル日本語"
-        text title_en "質問タイトル英語"
-        text answer_jp "解答日本語"
-        text answer_en "解答英語"
-        bigint category_id FK "カテゴリID"
-        datetime created_at "作成日時"
-        datetime updated_at "更新日時"
+        bigint   id           PK "ID"
+        text     title_jp     "質問タイトル日本語"
+        text     title_en     "質問タイトル英語"
+        text     answer_jp    "解答日本語"
+        text     answer_en    "解答英語"
+        bigint   category_id  FK "カテゴリID"
+        datetime created_at
+        datetime updated_at
     }
 
     ANSWER_CHOICES {
-        bigint id PK "ID"
-        text content_jp "選択肢内容日本語"
-        text content_en "選択肢内容英語"
-        boolean is_correct "正解フラグ"
-        bigint question_id FK "質問ID"
-        datetime created_at "作成日時"
-        datetime updated_at "更新日時"
-    }
-
-    QUIZ_HISTORIES {
-        bigint id PK "ID"
-        integer score "スコア"
-        integer total_questions "総問題数"
-        integer correct_answers "正解数"
-        bigint category_id FK "カテゴリID"
-        bigint user_id FK "ユーザーID"
-        datetime created_at "作成日時"
-        datetime updated_at "更新日時"
-    }
-
-    QUIZ_RESULTS {
-        bigint id PK "ID"
-        boolean is_correct "解答が正解だったか"
-        bigint selected_answer_choice_id FK "選択された解答選択肢ID"
-        bigint quiz_history_id FK "クイズ履歴ID"
-        bigint question_id FK "質問ID"
-        datetime created_at "作成日時"
-        datetime updated_at "更新日時"
+        bigint   id           PK "ID"
+        text     content_jp   "選択肢内容日本語"
+        text     content_en   "選択肢内容英語"
+        boolean  is_correct   "正解フラグ"
+        bigint   question_id  FK "質問ID"
+        datetime created_at
+        datetime updated_at
     }
 
     FAVORITES {
-        bigint id PK "ID"
-        bigint user_id FK "ユーザーID"
-        bigint question_id FK "質問ID"
-        datetime created_at "作成日時"
-        datetime updated_at "更新日時"
-        UNIQUE(user_id, question_id) "ユーザーごとのお気に入りユニーク制約"
+        bigint   id           PK "ID"
+        bigint   user_id      FK "ユーザーID"
+        bigint   question_id  FK "質問ID"
+        datetime created_at
+        datetime updated_at
     }
+
+    QUIZ_HISTORIES {
+        bigint   id           PK "ID"
+        integer  score        "スコア"
+        integer  total_questions "総問題数"
+        integer  correct_answers "正解数"
+        bigint   category_id  FK "カテゴリID"
+        bigint   user_id      FK "ユーザーID"
+        datetime created_at
+        datetime updated_at
+    }
+
+    QUIZ_RESULTS {
+        bigint   id                       PK "ID"
+        boolean  is_correct               "解答が正解だったか"
+        bigint   selected_answer_choice_id FK "選択された解答選択肢ID"
+        bigint   quiz_history_id          FK "クイズ履歴ID"
+        bigint   question_id              FK "質問ID"
+        datetime created_at
+        datetime updated_at
+    }
+```
