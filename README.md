@@ -112,8 +112,6 @@
 
 ## ■ 実装方針（MVP）
 
-## ■ 実装方針（MVP）
-
 - `db/seeds.rb` を用いて、カテゴリ付き英日Q&Aを一括登録（約50問）
 - `Category` モデルと `Question` モデルを `has_many / belongs_to` で紐付け
 - `ransack` を利用し、日本語・英語キーワードによる曖昧検索を実装
@@ -205,66 +203,81 @@ https://www.figma.com/design/lB2xtaGdEbdXdZbgvTkG29/Clear-Gate%E7%94%BB%E9%9D%A2
 
 ```mermaid
 erDiagram
-  USERS ||--o{ FAVORITES        : お気に入り登録
-  USERS ||--o{ QUIZ_HISTORIES   : 履歴
-  CATEGORIES ||--o{ QUESTIONS    : 質問一覧
-  CATEGORIES ||--o{ QUIZ_HISTORIES: 履歴カテゴリ
-  QUESTIONS ||--o{ FAVORITES     : お気に入り
-  QUESTIONS ||--o{ QUIZ_RESULTS  : 結果
-  QUIZ_HISTORIES ||--o{ QUIZ_RESULTS: 詳細結果
+    USERS ||--o{ FAVORITES        : お気に入り登録
+    USERS ||--o{ QUIZ_HISTORIES   : クイズ履歴
+    CATEGORIES ||--o{ QUESTIONS    : 所属質問
+    CATEGORIES ||--o{ QUIZ_HISTORIES: クイズカテゴリ
+    QUESTIONS ||--o{ ANSWER_CHOICES : 解答選択肢
+    QUESTIONS ||--o{ FAVORITES     : お気に入り対象
+    QUESTIONS ||--o{ QUIZ_RESULTS  : クイズ結果
+    QUIZ_HISTORIES ||--o{ QUIZ_RESULTS: 詳細結果
+    ANSWER_CHOICES ||--o{ QUIZ_RESULTS: 選択された回答
 
-  USERS {
-    int      id                        PK
-    string   name
-    string   email                     "ログイン用"
-    string   encrypted_password        "暗号化パスワード"
-    string   reset_password_token      "パスワードリセット用"
-    datetime reset_password_sent_at    "リセットメール送信日時"
-    datetime remember_created_at       "ログイン状態記憶"
-    string   unconfirmed_email         "新メールアドレス（確認待ち）"
-    datetime created_at
-    datetime updated_at
-  }
+    USERS {
+        bigint   id                        PK "ID"
+        string   email                     "メールアドレス"
+        string   encrypted_password        "暗号化されたパスワード"
+        string   reset_password_token      "パスワードリセットトークン"
+        datetime reset_password_sent_at    "パスワードリセット送信日時"
+        datetime remember_created_at       "ログイン記憶日時"
+        datetime created_at
+        datetime updated_at
+    }
 
-  CATEGORIES {
-    int      id   PK
-    string   name
-    datetime created_at
-    datetime updated_at
-  }
+    CATEGORIES {
+        bigint   id   PK "ID"
+        string   name "カテゴリ名"
+        datetime created_at
+        datetime updated_at
+    }
 
-  QUESTIONS {
-    int      id           PK
-    int      category_id  FK
-    text     english_text
-    text     japanese_text
-    text     sample_answer
-    datetime created_at
-    datetime updated_at
-  }
+    QUESTIONS {
+        bigint   id           PK "ID"
+        text     title_jp     "質問タイトル日本語"
+        text     title_en     "質問タイトル英語"
+        text     answer_jp    "解答日本語"
+        text     answer_en    "解答英語"
+        bigint   category_id  FK "カテゴリID"
+        datetime created_at
+        datetime updated_at
+    }
 
-  FAVORITES {
-    int      id           PK
-    int      user_id      FK
-    int      question_id  FK
-    datetime created_at
-    datetime updated_at
-  }
+    ANSWER_CHOICES {
+        bigint   id           PK "ID"
+        text     content_jp   "選択肢内容日本語"
+        text     content_en   "選択肢内容英語"
+        boolean  is_correct   "正解フラグ"
+        bigint   question_id  FK "質問ID"
+        datetime created_at
+        datetime updated_at
+    }
 
-  QUIZ_HISTORIES {
-    int      id           PK
-    int      user_id      FK
-    int      category_id  FK
-    int      score                 "正解数"
-    datetime created_at          "実施日時"
-    datetime updated_at
-  }
+    FAVORITES {
+        bigint   id           PK "ID"
+        bigint   user_id      FK "ユーザーID"
+        bigint   question_id  FK "質問ID"
+        datetime created_at
+        datetime updated_at
+    }
 
-  QUIZ_RESULTS {
-    int      id                PK
-    int      quiz_history_id   FK
-    int      question_id       FK
-    boolean  correct            "正誤フラグ"
-    datetime created_at
-    datetime updated_at
-  }
+    QUIZ_HISTORIES {
+        bigint   id           PK "ID"
+        integer  score        "スコア"
+        integer  total_questions "総問題数"
+        integer  correct_answers "正解数"
+        bigint   category_id  FK "カテゴリID"
+        bigint   user_id      FK "ユーザーID"
+        datetime created_at
+        datetime updated_at
+    }
+
+    QUIZ_RESULTS {
+        bigint   id                       PK "ID"
+        boolean  is_correct               "解答が正解だったか"
+        bigint   selected_answer_choice_id FK "選択された解答選択肢ID"
+        bigint   quiz_history_id          FK "クイズ履歴ID"
+        bigint   question_id              FK "質問ID"
+        datetime created_at
+        datetime updated_at
+    }
+```
