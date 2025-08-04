@@ -1,0 +1,54 @@
+
+ja:
+  activerecord:
+    models:
+      user: 'ユーザー'
+    attributes:
+      user:
+        name: '名前'
+        email: 'メールアドレス'
+        password: 'パスワード'
+        password_confirmation: 'パスワード（確認用）'
+        remember_me: 'ログイン情報を記憶する'
+  devise:
+    sessions:
+      signed_in: 'ログインしました。'
+      signed_out: 'ログアウトしました。'
+      already_signed_out: 'すでにログアウトしています。'
+    registrations:
+      signed_up: 'アカウント登録が完了しました。'
+      updated: 'アカウント情報を変更しました。'
+      destroyed: 'アカウントを削除しました。'
+    passwords:
+      send_instructions: 'パスワードの再設定方法をメールで送信しました。'
+      updated: 'パスワードを変更しました。'
+    confirmations:
+      send_instructions: 'アカウントの有効化方法をメールで送信しました。'
+      confirmed: 'アカウントを有効化しました。'
+    unlocks:
+      send_instructions: 'アカウントのロック解除方法をメールで送信しました。'
+      unlocked: 'アカウントのロックを解除しました。'
+    failure:
+      unauthenticated: 'ログインしてください。'
+      unconfirmed: 'アカウントの確認が完了していません。'
+      locked: 'あなたのアカウントはロックされています。'
+      invalid: 'メールアドレスかパスワードが違います。'
+      invalid_token: '認証キーが不正です。'
+      timeout: 'セッションがタイムアウトしました。もう一度ログインしてください。'
+      inactive: 'アカウントがまだ有効化されていません。'
+    mailer:
+      confirmation_instructions:
+        subject: 'アカウントの有効化'
+      reset_password_instructions:
+        subject: 'パスワードの再設定'
+      unlock_instructions:
+        subject: 'アカウントのロック解除'
+  errors:
+    messages:
+      not_found: "は見つかりませんでした"
+      already_confirmed: "は既に登録済みです"
+      not_locked: "はロックされていません"
+      not_saved:
+        one: "1件のエラーが発生したため %{resource} を保存できませんでした:"
+        other: "%{count}件のエラーが発生したため %{resource} を保存できませんでした:"
+
