@@ -2,9 +2,8 @@
 
 bundle install
 
-# If running the rails server then create or migrate existing database
-if [ "${1}" == "./bin/rails" ] && [ "${2}" == "server" ]; then
-  ./bin/rails db:migrate
-fi
+# Always run migrations on startup
+echo "Running database migrations..."
+./bin/rails db:migrate
 
 exec "${@}"
