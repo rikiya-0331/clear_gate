@@ -1,10 +1,8 @@
 #!/bin/bash -e
 
-bundle install
+# コンテナ起動時にマイグレーションを実行する
+# これにより、データベースのスキーマが常に最新の状態に保たれる
+bundle exec rails db:migrate
 
-# If running the rails server then create or migrate existing database
-if [ "${1}" == "./bin/rails" ] && [ "${2}" == "server" ]; then
-  ./bin/rails db:prepare
-fi
-
+# DockerfileのCMDで指定されたコマンドを実行
 exec "${@}"
