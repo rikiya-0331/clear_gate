@@ -20,14 +20,16 @@ Rails.application.configure do
   # key such as config/credentials/production.key. This key is used to decrypt credentials (and other encrypted files).
   # config.require_master_key = true
 
-  # Disable serving static files from `public/`, relying on NGINX/Apache to do so instead.
-  # config.public_file_server.enabled = false
+  # Renderではプリコンパイル済みアセットを推奨
+  config.assets.compile = false
+
+  # RenderのようなPaaS環境ではRailsアプリケーション自体が静的ファイルを配信する必要があるため、trueに設定する
+  config.public_file_server.enabled = true
 
   # Compress CSS using a preprocessor.
   # config.assets.css_compressor = :sass
 
   # Do not fall back to assets pipeline if a precompiled asset is missed.
-  config.assets.compile = false
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
@@ -71,20 +73,20 @@ Rails.application.configure do
   # config.active_job.queue_adapter = :resque
   # config.active_job.queue_name_prefix = "myapp_production"
 
-  """  config.action_mailer.perform_caching = false
-
-  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.perform_caching = false
+  if ENV['RAILS_ENV'] == 'production'
+    config.action_mailer.default_url_options = { host: ENV['RENDER_EXTERNAL_HOSTNAME'], protocol: 'https' }
+    Rails.application.routes.default_url_options = { host: ENV['RENDER_EXTERNAL_HOSTNAME'], protocol: 'https' }
+  end
   config.action_mailer.smtp_settings = {
-    address:              'smtp.example.com',
-    port:                 587,
-    domain:               'example.com',
-    user_name:            '<username>',
-    password:             '<password>',
-    authentication:       'plain',
+    address:              ENV.fetch('MAILGUN_SMTP_SERVER'),
+    port:                 ENV.fetch('MAILGUN_SMTP_PORT').to_i,
+    authentication:       :plain,
+    user_name:            ENV.fetch('MAILGUN_SMTP_LOGIN'),
+    password:             ENV.fetch('MAILGUN_SMTP_PASSWORD'),
+    domain:               ENV.fetch('MAILGUN_DOMAIN'),
     enable_starttls_auto: true
   }
-  config.action_mailer.default_url_options = { host: 'example.com' }
-""
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
