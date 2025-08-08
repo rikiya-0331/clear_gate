@@ -6,7 +6,6 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
@@ -20,12 +19,12 @@
           </div>
           <nav class="hidden md:flex items-center space-x-4">
             <%= link_to "ホーム", root_path, class: "text-gray-600 hover:text-gray-800" %>
-            <%= link_to "クイズで練習", "#", class: "text-gray-600 hover:text-gray-800" %>
+            <%= link_to "クイズを始める", "#", class: "text-gray-600 hover:text-gray-800" %>
             <% if user_signed_in? %>
               <%= link_to "マイページ", "#", class: "text-gray-600 hover:text-gray-800" %>
               <%= button_to "ログアウト", destroy_user_session_path, method: :delete, class: "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" %>
             <% else %>
-              <%= link_to "アカウントを作成", new_user_registration_path, class: "text-gray-600 hover:text-gray-800" %>
+              <%= link_to "新規登録", new_user_registration_path, class: "text-gray-600 hover:text-gray-800" %>
               <%= link_to "ログイン", new_user_session_path, class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
             <% end %>
           </nav>
