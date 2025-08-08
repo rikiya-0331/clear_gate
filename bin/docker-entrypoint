@@ -1,23 +1,8 @@
 #!/bin/bash -e
 
-# 実行されるすべてのコマンドをログに出力する
-set -x
-
-echo "--- Docker-entrypoint script has started ---"
-
-# DATABASE_URLが設定されているか確認
-if [ -z "$DATABASE_URL" ]; then
-  echo "FATAL: DATABASE_URL environment variable is not set."
-  exit 1
-else
-  echo "DATABASE_URL is confirmed to be present."
-fi
-
-echo "Attempting to run database migrations now..."
-./bin/rails db:migrate
-
-echo "Database migrations command has finished."
-echo "--- Starting the main application server ---"
+# コンテナ起動時にマイグレーションを実行する
+# これにより、データベースのスキーマが常に最新の状態に保たれる
+bundle exec rails db:migrate
 
 # DockerfileのCMDで指定されたコマンドを実行
 exec "${@}"
