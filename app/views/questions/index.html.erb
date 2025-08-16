@@ -1,0 +1,25 @@
+<div class="container mx-auto px-4 py-8" data-controller="filter">
+  <h1 class="text-3xl font-bold mb-6 text-center">質問一覧</h1>
+
+  <div class="flex flex-wrap justify-center gap-2 mb-8">
+    <button data-action="click->filter#filter" data-category-id="all" class="bg-blue-500 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-700 transition duration-300">全て表示</button>
+    <% @categories.each do |category| %>
+      <button data-action="click->filter#filter" data-category-id="<%= category.id %>" class="bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-full hover:bg-gray-300 transition duration-300">
+        <%= category.name %>
+      </button>
+    <% end %>
+  </div>
+
+  <div id="questions-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <% @questions.each do |question| %>
+      <div data-filter-target="item" data-category-id="<%= question.category_id %>" class="bg-white rounded-lg shadow-md p-6" data-controller="qa-card">
+        <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold mb-2 px-2.5 py-0.5 rounded-full"><%= question.category.name %></span>
+        <h2 class="text-xl font-bold mb-2"><%= question.title_en %></h2>
+        <button data-action="click->qa-card#toggle" data-qa-card-target="button" class="bg-gray-500 text-white font-bold py-2 px-4 rounded mt-2 hover:bg-gray-600 transition duration-300">
+          日本語訳を見る
+        </button>
+        <p class="text-lg mt-4 hidden" data-qa-card-target="japanese"><%= question.title_jp %></p>
+      </div>
+    <% end %>
+  </div>
+</div>
