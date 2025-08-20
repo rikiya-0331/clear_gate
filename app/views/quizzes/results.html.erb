@@ -1,0 +1,20 @@
+<h1>クイズ結果</h1>
+
+<% if @quiz_history %>
+  <p>スコア: <%= @quiz_history.score %> / <%= @quiz_history.total_questions %></p>
+
+  <h2>詳細</h2>
+  <ul>
+    <% @quiz_results.each do |result| %>
+      <li>
+        <strong>問題:</strong> <%= result.question.title_en %><br>
+        <strong>あなたの回答:</strong> <%= result.selected_answer_choice.content_jp %><br>
+        <strong>正誤:</strong> <%= result.is_correct? ? "正解" : "不正解" %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>結果が見つかりませんでした。</p>
+<% end %>
+
+<%= link_to "トップに戻る", root_path %>
