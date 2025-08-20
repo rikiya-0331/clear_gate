@@ -1,4 +1,14 @@
 Rails.application.routes.draw do
+  resources :quizzes, path: 'quiz', only: [:show] do
+    collection do
+      get :start
+      post :start, to: 'quizzes#create'
+      get :results
+    end
+    member do
+      post :answer
+    end
+  end
   if Rails.env.development?
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
   end

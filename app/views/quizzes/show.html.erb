@@ -1,0 +1,19 @@
+<h1>問題</h1>
+
+<div id="quiz-container" data-controller="qa-card" data-qa-card-question-id-value="<%= @question.id %>" data-qa-card-answer-url-value="<%= answer_quiz_path(@question) %>">
+  <h2><%= @question.title_en %></h2>
+
+  <div id="answer-choices">
+    <% @answer_choices.each do |choice| %>
+      <button class="answer-button" data-action="click->qa-card#checkAnswer" data-answer-choice-id="<%= choice.id %>">
+        <%= choice.content_jp %>
+      </button>
+    <% end %>
+  </div>
+
+  <div id="feedback" style="display: none;">
+    <p id="feedback-text"></p>
+    <a id="next-question-link" href="#" style="display: none;">次の問題へ</a>
+    <a id="results-link" href="#" style="display: none;">結果を見る</a>
+  </div>
+</div>
