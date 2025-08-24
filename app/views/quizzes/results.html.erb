@@ -1,20 +1,29 @@
-<h1>クイズ結果</h1>
+<div class="max-w-4xl mx-auto px-4 py-12">
+  <div class="bg-white shadow-2xl rounded-lg text-center p-10">
+    <h1 class="text-4xl font-extrabold text-gray-800 mb-4">クイズ結果</h1>
+    <p class="text-lg text-gray-600 mb-6">お疲れ様でした！あなたの結果は以下の通りです。</p>
 
-<% if @quiz_history %>
-  <p>スコア: <%= @quiz_history.score %> / <%= @quiz_history.total_questions %></p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
+      <div class="bg-indigo-100 border-l-4 border-indigo-500 text-indigo-800 p-6 rounded-lg">
+        <div class="text-4xl font-bold"><%= @quiz_history.score %>%</div>
+        <div class="text-md font-semibold mt-2">スコア</div>
+      </div>
+      <div class="bg-green-100 border-l-4 border-green-500 text-green-800 p-6 rounded-lg">
+        <div class="text-4xl font-bold"><%= @quiz_history.correct_answers %></div>
+        <div class="text-md font-semibold mt-2">正解数</div>
+      </div>
+      <div class="bg-gray-100 border-l-4 border-gray-500 text-gray-800 p-6 rounded-lg">
+        <div class="text-4xl font-bold"><%= @quiz_history.total_questions %></div>
+        <div class="text-md font-semibold mt-2">全問題数</div>
+      </div>
+    </div>
 
-  <h2>詳細</h2>
-  <ul>
-    <% @quiz_results.each do |result| %>
-      <li>
-        <strong>問題:</strong> <%= result.question.title_en %><br>
-        <strong>あなたの回答:</strong> <%= result.selected_answer_choice.content_jp %><br>
-        <strong>正誤:</strong> <%= result.is_correct? ? "正解" : "不正解" %>
-      </li>
-    <% end %>
-  </ul>
-<% else %>
-  <p>結果が見つかりませんでした。</p>
-<% end %>
+    <div class="mt-10">
+      <%= link_to "もう一度クイズをする", start_quizzes_path, class: "inline-block px-10 py-4 bg-indigo-600 text-white font-bold text-lg rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-transform transform hover:scale-105" %>
+    </div>
 
-<%= link_to "トップに戻る", root_path %>
+    <div class="mt-6">
+        <%= link_to "ホームに戻る", root_path, class: "text-indigo-600 hover:text-indigo-800 transition duration-150 ease-in-out" %>
+    </div>
+  </div>
+</div>

@@ -1,19 +1,54 @@
-<h1>問題</h1>
+<div data-controller="quiz" data-question-id="<%= @question.id %>" data-answer-url="<%= answer_quiz_path(@question) %>" class="max-w-4xl mx-auto px-4 py-8 font-sans">
+  <div class="bg-white shadow-2xl rounded-lg overflow-hidden">
 
-<div id="quiz-container" data-controller="qa-card" data-qa-card-question-id-value="<%= @question.id %>" data-qa-card-answer-url-value="<%= answer_quiz_path(@question) %>">
-  <h2><%= @question.title_en %></h2>
+    <!-- Progress Bar -->
+    <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+      <div data-quiz-target="progressBar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+    </div>
 
-  <div id="answer-choices">
-    <% @answer_choices.each do |choice| %>
-      <button class="answer-button" data-action="click->qa-card#checkAnswer" data-answer-choice-id="<%= choice.id %>">
-        <%= choice.content_jp %>
-      </button>
-    <% end %>
-  </div>
+    <div class="p-8">
+      <!-- Question Number -->
+      <div class="text-right text-gray-500 mb-4">
+        <span data-quiz-target="questionCounter">1</span> / <span data-quiz-target="totalQuestions"><%= @total_questions %></span>
+      </div>
 
-  <div id="feedback" style="display: none;">
-    <p id="feedback-text"></p>
-    <a id="next-question-link" href="#" style="display: none;">次の問題へ</a>
-    <a id="results-link" href="#" style="display: none;">結果を見る</a>
+      <!-- Question Title -->
+      <h2 class="text-2xl font-bold text-gray-800 mb-6" data-quiz-target="questionTitle">
+        <%= @question.title_en %>
+      </h2>
+
+      <!-- Answer Choices -->
+      <div data-quiz-target="choices" class="space-y-4 mb-6">
+        <% @answer_choices.each do |choice| %>
+          <label class="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors duration-200 ease-in-out">
+            <%= radio_button_tag :choice_id, choice.id, false, class: "h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300", "data-quiz-target": "choice" %>
+            <span class="ml-4 text-lg text-gray-700"><%= choice.content_jp %></span>
+          </label>
+        <% end %>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center justify-between mt-6">
+        <button data-action="click->quiz#submitAnswer" class="px-8 py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-transform transform hover:scale-105">
+          解答する
+        </button>
+        <button data-action="click->quiz#showAnswer" data-quiz-target="showAnswerButton" class="px-8 py-3 bg-gray-500 text-white font-bold rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transition-transform transform hover:scale-105 hidden">
+          答えを見る
+        </button>
+        <button data-action="click->quiz#nextQuestion" data-quiz-target="nextButton" class="px-8 py-3 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-400 transition-transform transform hover:scale-105 hidden">
+          次へ
+        </button>
+      </div>
+
+      <!-- Feedback Area -->
+      <div data-quiz-target="feedback" class="mt-6 p-4 rounded-lg text-center text-xl font-semibold hidden"></div>
+
+      <!-- Answer Explanation -->
+      <div data-quiz-target="explanation" class="mt-6 p-6 bg-gray-50 border-l-4 border-indigo-500 text-gray-800 hidden">
+        <h3 class="font-bold text-lg mb-2">解説</h3>
+        <p><%= @question.answer_jp %></p>
+      </div>
+
+    </div>
   </div>
 </div>
