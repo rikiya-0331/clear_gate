@@ -1,10 +1,21 @@
-<h1>クイズ開始</h1>
+<div class="max-w-4xl mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">クイズを開始する</h1>
 
-<%= form_with url: start_quizzes_path, method: :post do |form| %>
-  <div>
-    <%= form.label :category_id, "カテゴリを選択" %>
-    <%= form.collection_select :category_id, @categories, :id, :name %>
+  <div class="bg-white shadow-lg rounded-lg p-8">
+    <%= form_with url: start_quizzes_path, method: :post, local: true, class: "space-y-6" do |form| %>
+      <div>
+        <%= form.label :category_id, "カテゴリーを選択してください", class: "block text-lg font-medium text-gray-700 mb-2" %>
+        <%= form.collection_select :category_id, @categories, :id, :name, { prompt: "全てのカテゴリー" }, { class: "w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" } %>
+        <p class="text-sm text-gray-500 mt-2">カテゴリーを選択しない場合、全ての問題からランダムで出題されます。</p>
+      </div>
+
+      <div class="text-center">
+        <%= form.submit "クイズ開始", class: "inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-lg font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer" %>
+      </div>
+    <% end %>
   </div>
 
-  <%= form.submit "クイズを始める" %>
-<% end %>
+  <div class="mt-8 text-center">
+    <%= link_to "ホームに戻る", root_path, class: "text-indigo-600 hover:text-indigo-800 transition duration-150 ease-in-out" %>
+  </div>
+</div>

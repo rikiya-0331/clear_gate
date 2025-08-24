@@ -20,7 +20,7 @@
           </div>
           <nav class="hidden md:flex items-center space-x-4">
             <%= link_to "ホーム", root_path, class: "text-gray-600 hover:text-gray-800" %>
-            <%= link_to "クイズで練習", "#", class: "text-gray-600 hover:text-gray-800" %>
+            <%= link_to "クイズで練習", start_quizzes_path, class: "text-gray-600 hover:text-gray-800" %>
             <%= link_to "質問一覧", questions_path, class: "text-gray-600 hover:text-gray-800" %>
             <% if user_signed_in? %>
               <%= link_to "マイページ", "#", class: "text-gray-600 hover:text-gray-800" %>
