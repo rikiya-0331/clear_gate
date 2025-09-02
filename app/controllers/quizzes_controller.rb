@@ -63,6 +63,9 @@ class QuizzesController < ApplicationController
   def results
     @quiz_history = QuizHistory.find_by(id: session[:quiz_history_id])
     if @quiz_history
+      score = (@quiz_history.correct_answers.to_f / @quiz_history.total_questions.to_f * 100).round
+      @quiz_history.update!(score: score)
+
       @quiz_results = @quiz_history.quiz_results.includes(:question, :selected_answer_choice)
     end
     session.delete(:quiz_history_id)
