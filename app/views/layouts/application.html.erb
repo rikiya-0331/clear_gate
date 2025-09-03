@@ -23,7 +23,7 @@
             <%= link_to "クイズで練習", start_quizzes_path, class: "text-gray-600 hover:text-gray-800" %>
             <%= link_to "質問一覧", questions_path, class: "text-gray-600 hover:text-gray-800" %>
             <% if user_signed_in? %>
-              <%= link_to "マイページ", "#", class: "text-gray-600 hover:text-gray-800" %>
+              <%= link_to "マイページ", mypage_path, class: "text-gray-600 hover:text-gray-800" %>
               <%= button_to "ログアウト", destroy_user_session_path, method: :delete, class: "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" %>
             <% else %>
               <%= link_to "アカウントを作成", new_user_registration_path, class: "text-gray-600 hover:text-gray-800" %>
