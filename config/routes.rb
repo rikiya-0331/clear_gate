@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resource :mypage, only: [:show]
   resources :quizzes, path: 'quiz', only: [:show] do
     collection do
       get :start

@@ -1,0 +1,34 @@
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-2xl font-bold mb-6">マイページ</h1>
+
+  <h2 class="text-xl font-semibold mb-4">クイズ履歴</h2>
+
+  <% if @quiz_histories.present? %>
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-white border border-gray-200">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">カテゴリ</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">実施日時</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">正答率</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">スコア</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          <% @quiz_histories.each do |quiz_history| %>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap"><%= quiz_history.category.name %></td>
+              <td class="px-6 py-4 whitespace-nowrap"><%= l(quiz_history.created_at, format: :long) %></td>
+              <td class="px-6 py-4 whitespace-nowrap"><%= quiz_history.correct_answers %> / <%= quiz_history.total_questions %></td>
+              <td class="px-6 py-4 whitespace-nowrap"><%= quiz_history.score %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4" role="alert">
+      <p>クイズ履歴がありません。</p>
+    </div>
+  <% end %>
+</div>
