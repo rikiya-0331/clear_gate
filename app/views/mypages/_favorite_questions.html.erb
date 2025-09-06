@@ -1,0 +1,17 @@
+<div class="bg-white shadow-md rounded-lg p-6">
+  <h2 class="text-2xl font-bold mb-4">お気に入りした質問</h2>
+  <% if @favorite_questions.any? %>
+    <ul class="divide-y divide-gray-200">
+      <% @favorite_questions.each do |question| %>
+        <li class="py-4 flex justify-between items-center">
+          <%= link_to question.title_en, question_path(question), class: "text-lg hover:text-blue-600 transition duration-300" %>
+          <div class="flex-shrink-0 ml-4">
+            <%= render 'favorites/favorite_button', question: question %>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="text-gray-500">お気に入り登録した質問はまだありません。</p>
+  <% end %>
+</div>
