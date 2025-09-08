@@ -51,6 +51,7 @@ ENV MAILGUN_SMTP_PORT=587
 ENV MAILGUN_DOMAIN=dummy.com
 ENV MAILGUN_SMTP_LOGIN=dummy_login
 ENV MAILGUN_SMTP_PASSWORD=dummy_password
+RUN yarn build:css
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 
