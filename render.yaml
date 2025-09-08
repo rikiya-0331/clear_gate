@@ -3,5 +3,5 @@ services:
     name: clear-gate # Renderダッシュボードに表示されるサービス名です。お好きな名前に変更できます。
     env: ruby
     plan: starter # 必要に応じて有料プラン(例: starter)に変更してください
-    buildCommand: "mkdir -p app/assets/builds && bundle install && yarn install && yarn build && yarn build:css && bundle exec rails assets:precompile"
+    buildCommand: "bundle install && bundle exec rails assets:precompile"
     startCommand: "bundle exec puma -C config/puma.rb"
