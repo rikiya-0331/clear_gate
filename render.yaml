@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: clear-gate # Renderダッシュボードに表示されるサービス名です。お好きな名前に変更できます。
+    env: ruby
+    plan: starter # 必要に応じて有料プラン(例: starter)に変更してください
+    buildCommand: "bundle install && yarn install && yarn build && yarn build:css && bundle exec rails assets:precompile"
+    startCommand: "bundle exec puma -C config/puma.rb"
