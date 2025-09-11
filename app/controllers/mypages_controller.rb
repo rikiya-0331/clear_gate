@@ -3,6 +3,6 @@ class MypagesController < ApplicationController
 
   def show
     @quiz_histories = current_user.quiz_histories.order(created_at: :desc)
-    @favorite_questions = current_user.favorite_questions.joins(:favorites).order('favorites.created_at DESC')
+    @favorite_questions = Question.joins(:favorites).where(favorites: { user_id: current_user.id }).group('questions.id').order('MAX(favorites.created_at) DESC')
   end
 end
