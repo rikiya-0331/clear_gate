@@ -4,6 +4,7 @@
      data-quiz-next-url-value="<%= @next_question_id ? quiz_path(@next_question_id) : results_quizzes_path %>"
      data-quiz-current-question-number-value="<%= @current_question_number %>"
      data-quiz-total-questions-value="<%= @total_questions %>"
+     data-quiz-audio-url-value="<%= audio_question_path(@question) %>"
      class="max-w-4xl mx-auto px-4 py-8 font-sans">
 
   <div class="bg-white shadow-2xl rounded-lg overflow-hidden">
@@ -40,7 +41,7 @@
           解答する
         </button>
         <button data-action="click->quiz#toggleExplanation" data-quiz-target="showAnswerButton" class="px-8 py-3 bg-gray-500 text-white font-bold rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transition-transform transform hover:scale-105 hidden">
-          答えを見る
+          音声を聞く
         </button>
         <button data-action="click->quiz#nextQuestion" data-quiz-target="nextButton" class="px-8 py-3 bg-primary text-white font-bold rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-400 transition-transform transform hover:scale-105 hidden">
           次へ

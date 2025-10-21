@@ -21,7 +21,8 @@ export default class extends Controller {
     answerUrl: String,
     nextUrl: String,
     currentQuestionNumber: Number,
-    totalQuestions: Number
+    totalQuestions: Number,
+    audioUrl: String // audioUrlを追加
   }
 
   connect() {
@@ -113,6 +114,15 @@ export default class extends Controller {
 
   toggleExplanation() {
     this.explanationTarget.classList.toggle('hidden');
+
+    if (!this.explanationTarget.classList.contains('hidden')) {
+      // 解説が表示されたら音声を再生
+      const audio = new Audio(this.audioUrlValue);
+      audio.play();
+      this.showAnswerButtonTarget.textContent = "解説を隠す"; // ボタンテキスト変更
+    } else {
+      this.showAnswerButtonTarget.textContent = "音声を聞く"; // ボタンテキストを元に戻す
+    }
   }
 
   nextQuestion() {
