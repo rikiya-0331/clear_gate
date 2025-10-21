@@ -56,7 +56,10 @@
         <div class="space-y-4">
           <div>
             <p class="font-semibold text-gray-700">[問題]</p>
-            <p class="mt-1 text-gray-900"><%= simple_format(@question.answer_en) %></p>
+            <div class="flex items-center space-x-2">
+              <p class="mt-1 text-gray-900"><%= simple_format(@question.answer_en) %></p>
+              <%= render "shared/audio_button", url: audio_question_path(@question) %>
+            </div>
           </div>
           <hr class="border-gray-200">
           <div>

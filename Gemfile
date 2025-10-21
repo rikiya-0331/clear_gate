@@ -24,7 +24,8 @@ gem "turbo-rails"
 gem "stimulus-rails"
 
 # Bundle and process CSS [https://github.com/rails/cssbundling-rails]
-gem "cssbundling-rails"
+gem 'cssbundling-rails'
+gem 'sassc' # Required for Sass compilation
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
@@ -50,15 +51,19 @@ gem "bootsnap", require: false
 gem "devise"
 gem "rails-i18n"
 
+gem "dotenv-rails", groups: [:development, :test]
+gem "google-cloud-text_to_speech"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "debug", platforms: %i[ mri windows ]
+  gem "debug", platforms: %i[ mri mingw x64_mingw ]
+  gem "web-console"
 end
+
 
 group :development do
   gem 'letter_opener_web'
   # Use console on exceptions pages [https://github.com/rails/web-console]
-  gem "web-console"
 
   # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
   # gem "rack-mini-profiler"

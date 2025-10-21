@@ -18,3 +18,6 @@ application.register("qa-card", QaCardController)
 
 import QuizController from "./quiz_controller"
 application.register("quiz", QuizController)
+
+import AudioPlayerController from "./audio_player_controller"
+application.register("audio-player", AudioPlayerController)

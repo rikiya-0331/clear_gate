@@ -29,6 +29,9 @@ Rails.application.routes.draw do
   root "home#index"
 
   resources :questions, only: [:index, :show] do
+    member do
+      get :audio
+    end
     resource :favorites, only: [:create, :destroy]
   end
 end
