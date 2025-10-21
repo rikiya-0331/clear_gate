@@ -2,17 +2,17 @@
   <div class="bg-white shadow-md rounded-lg p-6 mb-6">
     <h1 class="text-2xl font-bold mb-4 text-gray-800">質問詳細</h1>
 
-    <div class="mb-4">
-      <p class="text-lg font-semibold text-gray-700">英語タイトル:</p>
-      <p class="text-xl text-gray-900"><%= @question.title_en %></p>
-    </div>
-
-    <div class="mb-6">
-      <p class="text-lg font-semibold text-gray-700">日本語タイトル:</p>
-      <p class="text-xl text-gray-900"><%= @question.title_jp %></p>
-    </div>
-
-    <div class="mt-8 text-center space-x-4">
+                    <div class="mb-4">
+                      <p class="text-lg font-semibold text-gray-700">英語の質問文:</p>
+                      <div class="flex items-center space-x-2">
+                        <p class="text-xl text-gray-900"><%= @question.title_en -%></p><%= render "shared/audio_button", url: audio_question_path(@question) -%>
+                      </div>
+                    </div>
+            
+                    <div class="mb-6">
+                      <p class="text-lg font-semibold text-gray-700">日本語訳:</p>
+                      <p class="text-xl text-gray-900"><%= @question.title_jp %></p>
+                    </div>    <div class="mt-8 text-center space-x-4">
       <%= link_to("マイページに戻る", mypage_path, class: "inline-block bg-primary hover:opacity-90 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out") %>
       <%= link_to("質問一覧に戻る", questions_path, class: "inline-block bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out") %>
     </div>
