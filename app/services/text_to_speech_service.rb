@@ -16,6 +16,13 @@ class TextToSpeechService
     # キャッシュが存在すれば、そのパスを返す
     return @file_path if File.exist?(@file_path)
 
+    # Render環境などでGOOGLE_APPLICATION_CREDENTIALS_JSONが直接設定されている場合に対応
+    if ENV['GOOGLE_APPLICATION_CREDENTIALS_JSON'].present?
+      temp_credentials_file = Rails.root.join("tmp", "google_credentials.json")
+      File.write(temp_credentials_file, ENV['GOOGLE_APPLICATION_CREDENTIALS_JSON'])
+      ENV['GOOGLE_APPLICATION_CREDENTIALS'] = temp_credentials_file.to_s
+    end
+
     # APIを呼び出して音声データを生成
     client = Google::Cloud::TextToSpeech.text_to_speech # クライアント初期化を修正
 
