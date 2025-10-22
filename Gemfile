@@ -25,7 +25,11 @@ gem "stimulus-rails"
 
 # Bundle and process CSS [https://github.com/rails/cssbundling-rails]
 gem 'cssbundling-rails'
-gem 'sassc' # Required for Sass compilation
+gem 'sassc' # Required for ActiveAdmin
+
+gem 'activeadmin'
+
+gem 'cancancan'
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
