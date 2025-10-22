@@ -20,4 +20,12 @@ class User < ApplicationRecord
       user.name = auth.info.name
     end
   end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["created_at", "email", "id", "name", "updated_at"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["favorite_questions", "favorites", "quiz_histories"]
+  end
 end
