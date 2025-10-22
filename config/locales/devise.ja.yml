@@ -47,6 +47,8 @@ ja:
     sessions:
       signed_in: "ログインしました。"
       signed_out: "ログアウトしました。"
+    omniauth_callbacks:
+      success: "%{kind}アカウントによる認証に成功しました。"
     unlocks:
       send_instructions: "アカウントロック解除のメールを送信しました。"
       send_paranoid_instructions: "ご登録のメールアドレスにアカウントロック解除のメールを送信しました。"
