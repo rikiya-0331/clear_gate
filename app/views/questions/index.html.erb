@@ -2,6 +2,23 @@
   <h1 class="text-3xl font-bold mb-6 text-center">質問一覧</h1>
   <p class="text-center text-gray-600 mb-6">※「〇〇」には、あなたの旅行先の国名や地名を当てはめて考えてください。</p>
 
+  <%# 検索フォームの追加 %>
+  <div class="mb-8 max-w-lg mx-auto">
+    <%= search_form_for @q, url: questions_path, method: :get do |f| %>
+      <div class="flex">
+        <%= f.search_field :title_jp_or_title_en_cont,
+                           placeholder: "キーワードで質問を検索...",
+                           class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+        <%= f.submit "検索", class: "ml-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+      </div>
+    <% end %>
+    <% if params[:q].present? %>
+      <div class="mt-4 text-center">
+        <%= link_to "絞り込みをリセット", questions_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+      </div>
+    <% end %>
+  </div>
+
   <div class="flex flex-wrap justify-center gap-2 mb-8">
     <button data-action="click->filter#filter" data-category-id="all" class="bg-primary text-white font-bold py-2 px-4 rounded-full hover:opacity-90 transition duration-300">全て表示</button>
     <% @categories.each do |category| %>
@@ -12,22 +29,26 @@
   </div>
 
   <div id="questions-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <% @questions.each do |question| %>
-      <div data-filter-target="item" data-category-id="<%= question.category_id %>" class="bg-white rounded-lg shadow-md p-6" data-controller="qa-card">
-        <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold mb-2 px-2.5 py-0.5 rounded-full"><%= question.category.name %></span>
-        <%= link_to question_path(question), class: "block" do %>
-          <h2 class="text-xl font-bold mb-2 hover:text-blue-600 transition duration-300"><%= question.title_en %></h2>
-        <% end %>
-        <button data-action="click->qa-card#toggle" data-qa-card-target="button" class="bg-gray-500 text-white font-bold py-2 px-4 rounded mt-2 hover:bg-gray-600 transition duration-300">
-          日本語訳を見る
-        </button>
-        <p class="text-lg mt-4 hidden" data-qa-card-target="japanese"><%= question.title_jp %></p>
-        <div class="mt-4">
-          <% if user_signed_in? %>
-            <%= render 'favorites/favorite_button', question: question %>
+    <% if @questions.any? %>
+      <% @questions.each do |question| %>
+        <div data-filter-target="item" data-category-id="<%= question.category_id %>" class="bg-white rounded-lg shadow-md p-6" data-controller="qa-card">
+          <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold mb-2 px-2.5 py-0.5 rounded-full"><%= question.category.name %></span>
+          <%= link_to question_path(question), class: "block" do %>
+            <h2 class="text-xl font-bold mb-2 hover:text-blue-600 transition duration-300"><%= question.title_en %></h2>
           <% end %>
+          <button data-action="click->qa-card#toggle" data-qa-card-target="button" class="bg-gray-500 text-white font-bold py-2 px-4 rounded mt-2 hover:bg-gray-600 transition duration-300">
+            日本語訳を見る
+          </button>
+          <p class="text-lg mt-4 hidden" data-qa-card-target="japanese"><%= question.title_jp %></p>
+          <div class="mt-4">
+            <% if user_signed_in? %>
+              <%= render 'favorites/favorite_button', question: question %>
+            <% end %>
+          </div>
         </div>
-      </div>
+      <% end %>
+    <% else %>
+      <p class="text-center text-gray-600 col-span-full">該当する質問は見つかりませんでした。</p>
     <% end %>
   </div>
 </div>
