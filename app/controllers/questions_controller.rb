@@ -20,4 +20,21 @@ class QuestionsController < ApplicationController
     audio_file_path = TextToSpeechService.call(question.answer_en)
     send_file audio_file_path, type: "audio/mpeg", disposition: "inline"
   end
+
+  # オートコンプリート検索用アクション
+  def autocomplete
+    @questions = Question.search_by_keyword(params[:keyword]).limit(10) # 上位10件に制限
+    json_data = @questions.map do |question|
+      { id: question.id, title_en: question.title_en, title_jp: question.title_jp }
+    end
+
+    # 強力なキャッシュ無効化ヘッダー
+    expires_now
+    response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
+    response.headers.delete("Etag")
+
+    render json: json_data
+  end
 end
