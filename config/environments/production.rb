@@ -6,6 +6,7 @@ Rails.application.configure do
   config.consider_all_requests_local = false
   config.action_controller.perform_caching = true
   config.assets.compile = false
+  config.assets.digest = true # この行を追加
   config.public_file_server.enabled = true
   config.active_storage.service = :local
   config.force_ssl = true
