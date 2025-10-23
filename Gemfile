@@ -30,6 +30,7 @@ gem 'sassc' # Required for ActiveAdmin
 gem 'activeadmin'
 
 gem 'cancancan'
+gem 'ransack'
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
