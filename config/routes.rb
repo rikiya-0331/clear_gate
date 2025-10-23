@@ -34,6 +34,9 @@ Rails.application.routes.draw do
     member do
       get :audio
     end
+    collection do # Add this block
+      get :autocomplete
+    end
     resource :favorites, only: [:create, :destroy]
   end
 end

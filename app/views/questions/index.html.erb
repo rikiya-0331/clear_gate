@@ -3,13 +3,16 @@
   <p class="text-center text-gray-600 mb-6">※「〇〇」には、あなたの旅行先の国名や地名を当てはめて考えてください。</p>
 
   <%# 検索フォームの追加 %>
-  <div class="mb-8 max-w-lg mx-auto">
+  <div class="mb-8 max-w-lg mx-auto" data-controller="autocomplete" data-autocomplete-url-value="<%= autocomplete_questions_path %>">
     <%= search_form_for @q, url: questions_path, method: :get do |f| %>
-      <div class="flex">
+      <div class="flex relative"> <%# Added relative for positioning results %>
         <%= f.search_field :title_jp_or_title_en_cont,
                            placeholder: "キーワードで質問を検索...",
-                           class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+                           class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm pr-10", # Added pr-10 for submit button space
+                           data: { autocomplete_target: "input", action: "input->autocomplete#search" } %>
         <%= f.submit "検索", class: "ml-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+        <%# Autocomplete results container - positioned absolutely below the input %>
+        <div data-autocomplete-target="results" class="absolute z-10 w-full top-full left-0 mt-1"></div>
       </div>
     <% end %>
     <% if params[:q].present? %>

@@ -28,4 +28,9 @@ class Question < ApplicationRecord
   def favorited_by?(user)
     favorites.exists?(user: user)
   end
+
+  # 英文タイトルで部分一致検索を行うスコープ
+  scope :search_by_keyword, ->(keyword) {
+    where("title_en ILIKE ? OR title_jp ILIKE ?", "%#{keyword}%", "%#{keyword}%") if keyword.present?
+  }
 end
