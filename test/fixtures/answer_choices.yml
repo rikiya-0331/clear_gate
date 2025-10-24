@@ -3,7 +3,7 @@
 one:
   content_jp: MyText
   content_en: MyText
-  is_correct: false
+  is_correct: true
   question: one
 
 two:

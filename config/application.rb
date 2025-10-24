@@ -12,6 +12,10 @@ module Myapp
     config.load_defaults 7.1
     config.i18n.default_locale = :ja
 
+    config.generators do |g|
+      g.orm :active_record, primary_key_type: :uuid
+    end
+
     # Configuration for the application, engines, and railties goes here.
 
     # Configuration for the application, engines, and railties goes here.
