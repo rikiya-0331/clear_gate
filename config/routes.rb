@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   ActiveAdmin.routes(self)
   resource :mypage, only: [:show]
   resources :quiz_histories, only: [:show]
-  resources :quizzes, path: 'quiz', only: [:show] do
+  resources :quizzes, path: 'quiz' do
     collection do
       get :start
       post :start, to: 'quizzes#create'
@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     end
     member do
       post :answer
+      get :detail
     end
   end
   if Rails.env.development?

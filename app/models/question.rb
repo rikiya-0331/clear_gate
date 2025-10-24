@@ -17,8 +17,7 @@ class Question < ApplicationRecord
   end
 
   def self.ransackable_associations(auth_object = nil)
-    # 公開画面でも管理画面でも 'category' での絞り込みは共通で許可
-    %w[category]
+    %w[category quiz_results favorites favoring_users]
   end
 
   def correct_answer
@@ -33,4 +32,7 @@ class Question < ApplicationRecord
   scope :search_by_keyword, ->(keyword) {
     where("title_en ILIKE ? OR title_jp ILIKE ?", "%#{keyword}%", "%#{keyword}%") if keyword.present?
   }
+
+  # テスト環境ではID順、それ以外ではランダム順で問題を返すスコープ
+  scope :in_random_order, -> { Rails.env.test? ? order(id: :asc) : order("RANDOM()") }
 end
