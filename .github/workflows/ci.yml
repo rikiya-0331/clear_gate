@@ -71,10 +71,3 @@ jobs:
       - name: Run RSpec
         run: bundle exec rspec
 
-      # 6. RSpecテストの実行
-      - name: Run RSpec
-        run: bundle exec rspec
-
-      # 6. RSpecテストの実行
-      - name: Run RSpec
-        run: bundle exec rspec
