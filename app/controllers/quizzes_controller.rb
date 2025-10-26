@@ -1,6 +1,10 @@
+# frozen_string_literal: true
+
 class QuizzesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_quiz_data, only: [:show, :answer]
+
+  def index; end
 
   def start
     @categories = Category.all
@@ -37,37 +41,56 @@ class QuizzesController < ApplicationController
   end
 
   def answer
+    quiz_history = QuizHistory.find(session[:quiz_history_id])
     question = Question.find(params[:id])
-    selected_choice = AnswerChoice.find(params[:choice_id])
-    is_correct = selected_choice.is_correct?
+    selected_answer_choice = AnswerChoice.find(params[:choice_id])
+    is_correct = selected_answer_choice.is_correct
+
+    if is_correct
+      quiz_history.increment!(:correct_answers)
+      quiz_history.increment!(:score, 10)
+    end
 
     QuizResult.create!(
-      quiz_history: @quiz_history,
+      quiz_history: quiz_history,
       question: question,
-      selected_answer_choice: selected_choice,
+      selected_answer_choice: selected_answer_choice,
       is_correct: is_correct
     )
 
-    @quiz_history.increment!(:correct_answers) if is_correct
+    current_question_index = @question_ids.index(question.id)
+    next_question_id = @question_ids[current_question_index + 1]
 
-    correct_choice = question.answer_choices.find_by(is_correct: true)
+    correct_answer_choice = question.answer_choices.find_by(is_correct: true)
+    correct_answer_id = correct_answer_choice.id if correct_answer_choice
 
-    render json: {
+    response_data = {
       correct: is_correct,
-      correct_choice_id: correct_choice.id,
-      selected_choice_id: selected_choice.id,
-      question_answer_jp: question.answer_jp
+      correct_answer_id: correct_answer_id,
+      question_answer_jp: question.answer_jp # 正解の日本語訳を追加
     }
+
+    if next_question_id
+      response_data[:next_question_url] = quiz_path(next_question_id)
+    else
+      quiz_history.update!(score: (quiz_history.correct_answers.to_f / quiz_history.total_questions.to_f * 100).round)
+      response_data[:results_url] = results_quizzes_path
+    end
+
+    render json: response_data
+  end
+
+  def detail
+    @question = Question.find(params[:id])
   end
 
   def results
     @quiz_history = QuizHistory.find_by(id: session[:quiz_history_id])
-    if @quiz_history
-      score = (@quiz_history.correct_answers.to_f / @quiz_history.total_questions.to_f * 100).round
-      @quiz_history.update!(score: score)
-
-      @quiz_results = @quiz_history.quiz_results.includes(:question, :selected_answer_choice)
+    if @quiz_history.nil?
+      redirect_to root_path, alert: 'クイズの履歴が見つかりません。'
+      return
     end
+    @quiz_results = @quiz_history.quiz_results.includes(:question, :selected_answer_choice)
     session.delete(:quiz_history_id)
     session.delete(:quiz_question_ids)
   end
@@ -77,10 +100,12 @@ class QuizzesController < ApplicationController
   def set_quiz_data
     @question_ids = session[:quiz_question_ids]
     @quiz_history = QuizHistory.find_by(id: session[:quiz_history_id])
-    @total_questions = @question_ids.count
 
     if @question_ids.blank? || @quiz_history.blank?
       redirect_to root_path, alert: "クイズセッションが見つかりません。もう一度最初からやり直してください。"
+      throw :abort
     end
+
+    @total_questions = @question_ids.count
   end
 end

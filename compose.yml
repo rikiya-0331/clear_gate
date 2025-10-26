@@ -35,6 +35,18 @@ services:
     depends_on:
       db:
         condition: service_healthy
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: bundle exec rspec
+    volumes:
+      - .:/myapp
+      - node_modules:/myapp/node_modules
+    environment:
+      RAILS_ENV: test
+    depends_on:
+      - db
 volumes:
   bundle_data:
   postgresql_data:
