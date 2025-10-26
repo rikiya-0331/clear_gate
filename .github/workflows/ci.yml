@@ -1,0 +1,70 @@
+# .github/workflows/ci.yml
+
+name: Rails CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    # servicesブロックでPostgreSQLデータベースをセットアップ
+    services:
+      postgres:
+        image: postgres:14-alpine # プロジェクトで使っているバージョンに合わせて調整
+        env:
+          POSTGRES_USER: rails
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: clear_gate_test
+        ports:
+          - 5432:5432
+        # DBが起動するまで待つためのヘルスチェック
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      RAILS_ENV: test
+      POSTGRES_HOST: localhost
+      POSTGRES_USER: rails
+      POSTGRES_PASSWORD: password
+      # GitHubのSecretsからRAILS_MASTER_KEYを読み込む
+      RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+
+    steps:
+      # 1. リポジトリのコードをチェックアウト
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Rubyのセットアップ (.ruby-versionからバージョンを読み込む)
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: file
+          bundler-cache: true # bundle installを自動実行し、Gemをキャッシュする
+
+      # 3. Node.jsのセットアップ (.node-versionからバージョンを読み込む)
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.node-version'
+          cache: 'yarn' # yarnの依存関係をキャッシュする
+
+      # 4. JavaScriptの依存関係をインストール
+      - name: Install yarn dependencies
+        run: yarn install --frozen-lockfile
+
+      # 5. テスト用データベースの準備
+      - name: Create and setup database
+        run: |
+          bundle exec rails db:create
+          bundle exec rails db:schema:load
+
+      # 6. RSpecテストの実行
+      - name: Run RSpec
+        run: bundle exec rspec
