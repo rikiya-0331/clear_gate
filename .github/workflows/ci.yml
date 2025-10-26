@@ -59,11 +59,15 @@ jobs:
       - name: Install yarn dependencies
         run: yarn install --frozen-lockfile
 
-      # 5. テスト用データベースの準備
-      - name: Create and setup database
-        run: DISABLE_DATABASE_ENVIRONMENT_CHECK=true RAILS_ENV=test bundle exec rails db:schema:load
+      # 5. アセットのビルド
+      - name: Build assets
+        run: bundle exec rails assets:precompile
 
-      # 6. RSpecテストの実行
+      # 6. テスト用データベースの準備
+      - name: Create and setup database
+        run: bundle exec rails db:schema:load
+
+      # 7. RSpecテストの実行
       - name: Run RSpec
         run: bundle exec rspec
 
