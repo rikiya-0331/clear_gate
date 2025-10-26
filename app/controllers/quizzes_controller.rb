@@ -58,8 +58,8 @@ class QuizzesController < ApplicationController
       is_correct: is_correct
     )
 
-    answered_question_ids = quiz_history.quiz_results.pluck(:question_id)
-    next_question = Question.where(category: quiz_history.category).where.not(id: answered_question_ids).order("RANDOM()").first
+    current_question_index = @question_ids.index(question.id)
+    next_question_id = @question_ids[current_question_index + 1]
 
     correct_answer_choice = question.answer_choices.find_by(is_correct: true)
     correct_answer_id = correct_answer_choice.id if correct_answer_choice
@@ -70,8 +70,8 @@ class QuizzesController < ApplicationController
       question_answer_jp: question.answer_jp # 正解の日本語訳を追加
     }
 
-    if next_question
-      response_data[:next_question_url] = quiz_path(next_question)
+    if next_question_id
+      response_data[:next_question_url] = quiz_path(next_question_id)
     else
       quiz_history.update!(score: (quiz_history.correct_answers.to_f / quiz_history.total_questions.to_f * 100).round)
       response_data[:results_url] = results_quizzes_path

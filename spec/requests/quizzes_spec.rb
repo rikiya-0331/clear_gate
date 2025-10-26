@@ -97,24 +97,22 @@ RSpec.describe 'Quizzes', type: :request do
   describe 'POST /quiz/:id/answer' do
     let(:user) { create(:user) }
     let!(:question1) { create(:question, category: category) }
-    let!(:question2) { create(:question, category: category) }
+    let(:question2) { create(:question, category: category) }
     let!(:correct_answer) { create(:answer_choice, question: question1, is_correct: true) }
     let!(:incorrect_answer) { create(:answer_choice, question: question1, is_correct: false) }
 
     before do
       sign_in user
-      post start_quizzes_path, params: { category_id: category.id }
-      expect(response).to have_http_status(:redirect) # リダイレクトを期待
-      follow_redirect! # リダイレクトを追跡してセッションを確立
-      # セッションが正しく設定されていることを確認し、テスト内で利用できるようにする
-      @quiz_history = QuizHistory.find(session[:quiz_history_id])
-      @question_ids = session[:quiz_question_ids]
     end
 
     context 'with a correct answer' do
       it 'returns a correct response and URL for the next question' do
+        allow(Question).to receive_message_chain(:where, :order, :all, :sample).and_return([question1, question2])
+
+        post start_quizzes_path, params: { category_id: category.id }
+
         expect do
-          post answer_quiz_path(question1), params: { selected_answer_choice_id: correct_answer.id }
+          post answer_quiz_path(question1), params: { choice_id: correct_answer.id }
         end.to change(QuizResult, :count).by(1)
 
         expect(response).to have_http_status(:ok)
@@ -126,17 +124,21 @@ RSpec.describe 'Quizzes', type: :request do
 
     context 'with an incorrect answer' do
       it 'returns an incorrect response' do
-        post answer_quiz_path(question1), params: { selected_answer_choice_id: incorrect_answer.id }
+        allow(Question).to receive_message_chain(:where, :order, :all, :sample).and_return([question1, question2])
+        post start_quizzes_path, params: { category_id: category.id }
+
+        post answer_quiz_path(question1), params: { choice_id: incorrect_answer.id }
         json_response = response.parsed_body
         expect(json_response['correct']).to be false
       end
     end
 
     context 'with the last question' do
-      let!(:question2) { nil } # このコンテキストではquestion2は存在しない
-
       it 'returns a response with the results URL' do
-        post answer_quiz_path(question1), params: { selected_answer_choice_id: correct_answer.id }
+        allow(Question).to receive_message_chain(:where, :order, :all, :sample).and_return([question1])
+        post start_quizzes_path, params: { category_id: category.id }
+
+        post answer_quiz_path(question1), params: { choice_id: correct_answer.id }
         json_response = response.parsed_body
         expect(json_response['results_url']).to eq results_quizzes_path
       end
