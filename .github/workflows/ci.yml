@@ -63,9 +63,7 @@ jobs:
       - name: Create and setup database
         env:
           DATABASE_URL: "postgres://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@${{ env.POSTGRES_HOST }}:5432/clear_gate_test"
-        run: |
-          bundle exec rails db:create
-          bundle exec rails db:schema:load
+        run: bundle exec rails db:schema:load
 
       # 6. RSpecテストの実行
       - name: Run RSpec
