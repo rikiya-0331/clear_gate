@@ -30,7 +30,7 @@ jobs:
 
     env:
       RAILS_ENV: test
-      POSTGRES_HOST: localhost
+      POSTGRES_HOST: postgres # サービス名をホストとして指定
       POSTGRES_USER: rails
       POSTGRES_PASSWORD: password
       # GitHubのSecretsからRAILS_MASTER_KEYを読み込む
@@ -61,7 +61,13 @@ jobs:
 
       # 5. テスト用データベースの準備
       - name: Create and setup database
-        run: DISABLE_DATABASE_ENVIRONMENT_CHECK=true RAILS_ENV=test bundle exec rails db:schema:load
+        run: |
+          bundle exec rails db:create
+          bundle exec rails db:schema:load
+
+      # 6. RSpecテストの実行
+      - name: Run RSpec
+        run: bundle exec rspec
 
       # 6. RSpecテストの実行
       - name: Run RSpec
