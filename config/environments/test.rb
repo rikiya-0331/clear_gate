@@ -47,6 +47,9 @@ Rails.application.configure do
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
 
+  # `db:schema:load` が `check_protected_environments` で失敗するのを防ぐ
+  config.active_record.dump_schema_after_migration = false
+
   # Raise exceptions for disallowed deprecations.
   config.active_support.disallowed_deprecation = :raise
 
