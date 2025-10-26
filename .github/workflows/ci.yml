@@ -61,6 +61,8 @@ jobs:
 
       # 5. テスト用データベースの準備
       - name: Create and setup database
+        env:
+          DATABASE_URL: "postgres://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@${{ env.POSTGRES_HOST }}:5432/${{ services.postgres.env.POSTGRES_DB }}"
         run: |
           bundle exec rails db:create
           bundle exec rails db:schema:load
