@@ -61,9 +61,7 @@ jobs:
 
       # 5. テスト用データベースの準備
       - name: Create and setup database
-        run: |
-          bundle exec rails db:create
-          bundle exec rails db:schema:load
+        run: bundle exec rails db:schema:load
 
       # 6. RSpecテストの実行
       - name: Run RSpec
