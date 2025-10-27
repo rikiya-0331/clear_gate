@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   before_action :_set_common_meta_tags # この行を追加
 
   def after_sign_in_path_for(resource)
-    root_path
+    questions_path # Change from root_path
   end
 
   def after_sign_out_path_for(resource_or_scope)
