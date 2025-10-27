@@ -68,6 +68,7 @@ group :development, :test do
   # RSpec for testing
   gem "rspec-rails"
   gem "factory_bot_rails"
+  gem "faker"
 
   # Add RuboCop for static code analysis
   gem "rubocop", require: false
