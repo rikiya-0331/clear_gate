@@ -59,7 +59,11 @@ jobs:
       - name: Install yarn dependencies
         run: yarn install --frozen-lockfile
 
-      # 5. アセットのビルド
+      # 5. RuboCopでコードを静的解析
+      - name: Lint with RuboCop
+        run: bundle exec rubocop
+
+      # 6. アセットのビルド
       - name: Build assets
         run: bundle exec rails assets:precompile
 

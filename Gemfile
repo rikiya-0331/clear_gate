@@ -67,11 +67,13 @@ group :development, :test do
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
   # RSpec for testing
   gem "rspec-rails"
-  # FactoryBot for test data
   gem "factory_bot_rails"
-  # Faker for generating fake data
-  gem "faker"
 
+  # Add RuboCop for static code analysis
+  gem "rubocop", require: false
+  gem "rubocop-rails", require: false
+  gem "rubocop-performance", require: false
+  gem "rubocop-rspec", require: false
 end
 
 
