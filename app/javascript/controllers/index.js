@@ -19,6 +19,9 @@ application.register("flash-message", FlashMessageController)
 import HelloController from "./hello_controller"
 application.register("hello", HelloController)
 
+import ModalController from "./modal_controller"
+application.register("modal", ModalController)
+
 import QaCardController from "./qa_card_controller"
 application.register("qa-card", QaCardController)
 
