@@ -4,10 +4,9 @@ require 'rails_helper'
 
 RSpec.describe 'Quizzes', type: :request do
   let!(:category) { create(:category) }
+  let(:user) { create(:user) }
 
   describe 'GET /quizzes' do
-    let(:user) { create(:user) }
-
     before do
       sign_in user
     end
@@ -95,9 +94,8 @@ RSpec.describe 'Quizzes', type: :request do
   end
 
   describe 'POST /quiz/:id/answer' do
-    let(:user) { create(:user) }
-    let!(:question1) { create(:question, category: category) }
-    let(:question2) { create(:question, category: category) }
+    let!(:question1) { create(:question, category: category, created_at: 2.hours.ago) }
+    let!(:question2) { create(:question, category: category, created_at: 1.hour.ago) }
     let!(:correct_answer) { create(:answer_choice, question: question1, is_correct: true) }
     let!(:incorrect_answer) { create(:answer_choice, question: question1, is_correct: false) }
 
@@ -106,43 +104,51 @@ RSpec.describe 'Quizzes', type: :request do
     end
 
     context 'with a correct answer' do
-      before do
-        # Mock the questions that will be used to populate session[:quiz_question_ids]
-        # Ensure category.questions.sample returns exactly [question1, question2]
-        allow(category.questions).to receive(:sample).and_return([question1, question2])
-        post start_quizzes_path, params: { category_id: category.id }
-      end
-
       it 'returns a correct response and URL for the next question' do
-        expect do
-          post answer_quiz_path(question1), params: { choice_id: correct_answer.id }
-        end.to change(QuizResult, :count).by(1)
-
+        quiz_history = create(:quiz_history, user: user, category: category)
+        allow_any_instance_of(QuizzesController).to receive(:session).and_return({
+                                                                                   quiz_question_ids: [question1.id, question2.id],
+                                                                                   quiz_history_id: quiz_history.id
+                                                                                 })
+        post answer_quiz_path(question1), params: { choice_id: correct_answer.id }
         expect(response).to have_http_status(:ok)
         json_response = response.parsed_body
         expect(json_response['correct']).to be true
         expect(json_response['next_question_url']).to eq quiz_path(question2)
+        expect(QuizResult.count).to eq 1
+        expect(QuizResult.last.is_correct).to be true
       end
     end
 
     context 'with an incorrect answer' do
-      it 'returns an incorrect response' do
-        allow(Question).to receive_message_chain(:where, :order, :all, :sample).and_return([question1, question2])
-        post start_quizzes_path, params: { category_id: category.id }
-
+      it 'returns an incorrect response and URL for the next question' do
+        quiz_history = create(:quiz_history, user: user, category: category)
+        allow_any_instance_of(QuizzesController).to receive(:session).and_return({
+                                                                                   quiz_question_ids: [question1.id, question2.id],
+                                                                                   quiz_history_id: quiz_history.id
+                                                                                 })
         post answer_quiz_path(question1), params: { choice_id: incorrect_answer.id }
+        expect(response).to have_http_status(:ok)
         json_response = response.parsed_body
         expect(json_response['correct']).to be false
+        expect(json_response['next_question_url']).to eq quiz_path(question2)
+        expect(QuizResult.count).to eq 1
+        expect(QuizResult.last.is_correct).to be false
       end
     end
 
     context 'with the last question' do
       it 'returns a response with the results URL' do
-        allow(Question).to receive_message_chain(:where, :order, :all, :sample).and_return([question1])
-        post start_quizzes_path, params: { category_id: category.id }
-
+        quiz_history = create(:quiz_history, user: user, category: category)
+        allow_any_instance_of(QuizzesController).to receive(:session).and_return({
+                                                                                   quiz_question_ids: [question1.id],
+                                                                                   quiz_history_id: quiz_history.id
+                                                                                 })
         post answer_quiz_path(question1), params: { choice_id: correct_answer.id }
+        expect(response).to have_http_status(:ok)
         json_response = response.parsed_body
+        expect(json_response['correct']).to be true
+        expect(json_response['next_question_url']).to be_nil
         expect(json_response['results_url']).to eq results_quizzes_path
       end
     end
@@ -157,7 +163,7 @@ RSpec.describe 'Quizzes', type: :request do
       before do
         sign_in user
         post start_quizzes_path, params: { category_id: category.id }
-        post answer_quiz_path(question), params: { selected_answer_choice_id: answer_choice.id }
+        post answer_quiz_path(question), params: { choice_id: answer_choice.id }
       end
 
       it 'responds successfully' do

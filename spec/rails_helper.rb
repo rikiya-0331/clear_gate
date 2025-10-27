@@ -54,6 +54,8 @@ RSpec.configure do |config|
     # テスト間のセッションとキャッシュの干渉を防ぐ
     Rails.cache.clear
     Capybara.reset_sessions!
+    # テスト間のセッションストアを分離
+    Rails.application.config.session_store :cookie_store, key: '_test_session'
   end
 
   # You can uncomment this line to turn off ActiveRecord support entirely.

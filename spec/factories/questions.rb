@@ -5,5 +5,10 @@ FactoryBot.define do
     answer_jp { Faker::Lorem.paragraph }
     answer_en { Faker::Lorem.paragraph }
     association :category # Category Factoryと関連付ける
+
+    # 順序を保証するためのtrait
+    trait :ordered do
+      created_at { Time.current }
+    end
   end
 end

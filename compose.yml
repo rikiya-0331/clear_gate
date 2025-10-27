@@ -41,7 +41,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    command: bundle exec rspec
+    entrypoint: ./bin/test-entrypoint.sh
     volumes:
       - .:/myapp
       - node_modules:/myapp/node_modules
