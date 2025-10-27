@@ -12,7 +12,7 @@ class QuizzesController < ApplicationController
 
   def create
     category = Category.find(params[:category_id])
-    questions = category.questions.order(:id).all.sample(10)
+    questions = fetch_quiz_questions(category)
 
     if questions.empty?
       redirect_to root_path, alert: "このカテゴリには問題がありません。"
@@ -41,13 +41,21 @@ class QuizzesController < ApplicationController
   end
 
   def answer
-    quiz_history = QuizHistory.find(session[:quiz_history_id])
+    # エラーハンドリングを追加
+    if session[:quiz_question_ids].blank?
+      render json: { error: 'Quiz session not found' }, status: :unprocessable_entity
+      return
+    end
+
+    quiz_history = QuizHistory.find_by(id: session[:quiz_history_id])
+    unless quiz_history
+      render json: { error: 'Quiz history not found' }, status: :unprocessable_entity
+      return
+    end
+
     question = Question.find(params[:id])
     selected_answer_choice = AnswerChoice.find(params[:choice_id])
     is_correct = selected_answer_choice.is_correct
-
-    # Ensure question.id is a string for comparison
-    question_id_for_index = question.id.to_s
 
     if is_correct
       quiz_history.increment!(:correct_answers)
@@ -61,21 +69,29 @@ class QuizzesController < ApplicationController
       is_correct: is_correct
     )
 
-    current_question_index = @question_ids.index(question_id_for_index)
-    next_question_id = @question_ids[current_question_index + 1]
+    # セッションから取得した順序を使用
+    question_ids = session[:quiz_question_ids]
+    current_question_index = question_ids.index(question.id)
+
+    if current_question_index.nil?
+      Rails.logger.error "Question #{question.id} not found in session question_ids"
+      render json: { error: 'Question not found in current quiz' }, status: :unprocessable_entity
+      return
+    end
+
+    next_question_id = question_ids[current_question_index + 1]
 
     correct_answer_choice = question.answer_choices.find_by(is_correct: true)
-    correct_answer_id = correct_answer_choice.id if correct_answer_choice
+    correct_answer_id = correct_answer_choice&.id
 
     response_data = {
       correct: is_correct,
       correct_answer_id: correct_answer_id,
-      question_answer_jp: question.answer_jp # 正解の日本語訳を追加
+      question_answer_jp: question.answer_jp
     }
 
     if next_question_id
-      next_question_url = quiz_path(next_question_id)
-      response_data[:next_question_url] = next_question_url
+      response_data[:next_question_url] = quiz_path(next_question_id)
     else
       quiz_history.update!(score: (quiz_history.correct_answers.to_f / quiz_history.total_questions.to_f * 100).round)
       response_data[:results_url] = results_quizzes_path
@@ -111,5 +127,11 @@ class QuizzesController < ApplicationController
     end
 
     @total_questions = @question_ids.count
+  end
+
+  # テスト可能なメソッドとして分離
+  def fetch_quiz_questions(category)
+    # created_atで順序を保証（UUIDでも安定）
+    category.questions.order(:created_at).limit(10)
   end
 end

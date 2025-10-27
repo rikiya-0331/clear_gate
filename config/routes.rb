@@ -29,7 +29,7 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   # Defines the root path route ("/")
-  root "home#index"
+  root "pages#home"
 
   resources :questions, only: [:index, :show] do
     member do
