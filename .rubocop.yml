@@ -1,0 +1,90 @@
+inherit_from: .rubocop_todo.yml
+
+# .rubocop.yml
+plugins:
+  - rubocop-rails
+  - rubocop-performance
+  - rubocop-rspec
+
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.2 # .ruby-versionから取得
+  TargetRailsVersion: 7.1 # プロジェクトのRailsバージョンに合わせて設定
+  Exclude:
+    - 'bin/**/*'
+    - 'db/schema.rb'
+    - 'node_modules/**/*'
+    - 'vendor/**/*'
+    - 'tmp/**/*'
+    - 'log/**/*'
+    - 'config/initializers/**/*'
+    - 'config/environments/**/*'
+    - 'config/puma.rb'
+    - 'config/application.rb'
+    - 'config/boot.rb'
+    - 'config/cable.yml'
+    - 'config/database.yml'
+    - 'config/storage.yml'
+    - 'config/credentials.yml.enc'
+    - 'config/routes.rb' # ルーティングファイルはRuboCopの対象外とすることが多い
+    - 'app/admin/**/*' # ActiveAdminのファイルはRuboCopの対象外とすることが多い
+    - 'app/assets/builds/**/*'
+    - 'app/javascript/**/*' # JavaScriptファイルは対象外
+    - 'app/views/**/*' # ビューファイルは対象外
+
+# Style
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+Style/FrozenStringLiteralComment:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
+Style/ClassAndModuleChildren:
+  Enabled: false # Railsのディレクトリ構造と相性が悪いため無効化
+
+# Layout
+
+# Metrics
+Metrics/BlockLength:
+  Exclude:
+    - '**/*.rake'
+    - 'spec/**/*.rb'
+    - 'config/**/*.rb'
+    - 'app/admin/**/*.rb'
+  CountAsOne: ['array', 'hash'] # 配列やハッシュの定義は1行とカウント
+
+Metrics/MethodLength:
+  Max: 20 # メソッドの最大行数
+
+Metrics/AbcSize:
+  Max: 20 # メソッドの複雑度
+
+# Naming
+Naming/FileName:
+  Exclude:
+    - '**/Gemfile'
+    - '**/Rakefile'
+    - '**/config.ru'
+
+# Rails specific
+Rails/LexicallyScopedActionFilter:
+  Enabled: false # Rails 7.1で非推奨になったため無効化
+
+# RSpec specific
+RSpec:
+  Enabled: true
+
+RSpec/MultipleExpectations:
+  Max: 5 # RSpecのexpectの最大数
+
+RSpec/ExampleLength:
+  Max: 10 # RSpecのexampleの最大行数
+
+RSpec/NestedGroups:
+  Max: 3 # RSpecのネストされたdescribe/contextの最大数
+
+# Performance specific
+Performance/StringIdentifierArgument:
+  Enabled: true
+
+# その他、プロジェクトに合わせて調整

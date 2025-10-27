@@ -46,6 +46,9 @@ class QuizzesController < ApplicationController
     selected_answer_choice = AnswerChoice.find(params[:choice_id])
     is_correct = selected_answer_choice.is_correct
 
+    # Ensure question.id is a string for comparison
+    question_id_for_index = question.id.to_s
+
     if is_correct
       quiz_history.increment!(:correct_answers)
       quiz_history.increment!(:score, 10)
@@ -58,7 +61,7 @@ class QuizzesController < ApplicationController
       is_correct: is_correct
     )
 
-    current_question_index = @question_ids.index(question.id)
+    current_question_index = @question_ids.index(question_id_for_index)
     next_question_id = @question_ids[current_question_index + 1]
 
     correct_answer_choice = question.answer_choices.find_by(is_correct: true)
@@ -71,7 +74,8 @@ class QuizzesController < ApplicationController
     }
 
     if next_question_id
-      response_data[:next_question_url] = quiz_path(next_question_id)
+      next_question_url = quiz_path(next_question_id)
+      response_data[:next_question_url] = next_question_url
     else
       quiz_history.update!(score: (quiz_history.correct_answers.to_f / quiz_history.total_questions.to_f * 100).round)
       response_data[:results_url] = results_quizzes_path

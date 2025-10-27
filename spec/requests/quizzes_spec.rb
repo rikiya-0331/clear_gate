@@ -107,7 +107,9 @@ RSpec.describe 'Quizzes', type: :request do
 
     context 'with a correct answer' do
       it 'returns a correct response and URL for the next question' do
-        allow(Question).to receive_message_chain(:where, :order, :all, :sample).and_return([question1, question2])
+        # Mock the questions that will be used to populate session[:quiz_question_ids]
+        # Ensure category.questions.order(:id).all returns exactly [question1, question2]
+        allow(category).to receive_message_chain(:questions, :order, :all).and_return([question1, question2])
 
         post start_quizzes_path, params: { category_id: category.id }
 
