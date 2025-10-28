@@ -14,7 +14,7 @@ RSpec.describe "Favorites", type: :request do
       expect {
         post question_favorites_path(question)
       }.to change(Favorite, :count).by(1)
-      expect(response).to redirect_to(question_path(question))
+      expect(response).to redirect_to(questions_path)
     end
   end
 
@@ -25,7 +25,7 @@ RSpec.describe "Favorites", type: :request do
       expect {
         delete question_favorites_path(question)
       }.to change(Favorite, :count).by(-1)
-      expect(response).to redirect_to(question_path(question))
+      expect(response).to redirect_to(questions_path)
     end
   end
 end

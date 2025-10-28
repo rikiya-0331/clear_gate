@@ -13,6 +13,13 @@ class QuestionsController < ApplicationController
   def show
     @question = Question.find(params[:id])
     @correct_answer_choice = @question.answer_choices.find_by(is_correct: true)
+
+    # --- 閲覧履歴をセッションに保存 ---
+    session[:viewed_question_ids] ||= []
+    session[:viewed_question_ids].unshift(@question.id)
+    session[:viewed_question_ids].uniq!
+    session[:viewed_question_ids] = session[:viewed_question_ids].take(10)
+    # ---------------------------------
   end
 
   def audio

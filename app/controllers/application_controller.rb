@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
-  before_action :_set_common_meta_tags # この行を追加
+  before_action :_set_common_meta_tags
+  helper_method :question_favorited?
 
   def after_sign_in_path_for(resource)
     questions_path # Change from root_path
@@ -10,6 +11,33 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def migrate_favorites_from_session(user)
+    return if session[:favorite_question_ids].blank?
+
+    # 現在ユーザーがすでにお気に入りにしている質問IDのリストを取得
+    existing_favorite_ids = user.favorite_question_ids
+    # セッション内のIDから、すでにDBに存在するものを除外
+    new_favorite_ids = session[:favorite_question_ids] - existing_favorite_ids
+
+    # 新しいお気に入りのみ一括で登録
+    favorites_to_create = new_favorite_ids.map do |question_id|
+      { user_id: user.id, question_id: question_id, created_at: Time.current, updated_at: Time.current }
+    end
+
+    Favorite.insert_all(favorites_to_create) if favorites_to_create.any?
+
+    # セッションからお気に入り情報を削除
+    session.delete(:favorite_question_ids)
+  end
+
+  def question_favorited?(question)
+    if user_signed_in?
+      current_user.favorite_question_ids.include?(question.id)
+    else
+      session[:favorite_question_ids]&.include?(question.id)
+    end
+  end
 
   # meta-tags Gemのヘルパーとメソッド名が衝突しないようにアンダースコアを付与
   def _set_common_meta_tags
