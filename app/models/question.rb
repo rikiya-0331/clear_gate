@@ -3,6 +3,7 @@ class Question < ApplicationRecord
   has_many :answer_choices, dependent: :destroy
   has_many :quiz_results, dependent: :destroy
   has_many :favorites, dependent: :destroy
+  has_many :viewed_histories, dependent: :destroy
   accepts_nested_attributes_for :answer_choices, allow_destroy: true
 
   # Ransackでの検索・フィルタリングを制御

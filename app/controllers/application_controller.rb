@@ -31,6 +31,21 @@ class ApplicationController < ActionController::Base
     session.delete(:favorite_question_ids)
   end
 
+  def migrate_viewed_history_from_session(user)
+    return if session[:viewed_question_ids].blank?
+
+    existing_viewed_ids = user.viewed_question_ids
+    new_viewed_ids = session[:viewed_question_ids] - existing_viewed_ids
+
+    viewed_histories_to_create = new_viewed_ids.map do |question_id|
+      { user_id: user.id, question_id: question_id, created_at: Time.current, updated_at: Time.current }
+    end
+
+    ViewedHistory.insert_all(viewed_histories_to_create) if viewed_histories_to_create.any?
+
+    session.delete(:viewed_question_ids)
+  end
+
   def question_favorited?(question)
     if user_signed_in?
       current_user.favorite_question_ids.include?(question.id)

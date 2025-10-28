@@ -1,6 +1,8 @@
 class HistoriesController < ApplicationController
   def index
-    if session[:viewed_question_ids].present?
+    if user_signed_in?
+      @viewed_questions = current_user.viewed_questions.order('viewed_histories.created_at DESC')
+    elsif session[:viewed_question_ids].present?
       # DBからIDに基づいて質問を取得
       @viewed_questions = Question.where(id: session[:viewed_question_ids])
       
