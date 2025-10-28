@@ -1,0 +1,31 @@
+<% provide(:title, '閲覧履歴') %>
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-6 text-gray-800 border-b-2 pb-2">閲覧履歴</h1>
+
+  <% if !user_signed_in? %>
+    <div class="mb-6 p-4 bg-blue-100 border-l-4 border-blue-500 text-blue-700">
+      <p>現在の閲覧履歴は、ブラウザを閉じるとリセットされます。</p>
+      <p>アカウントに
+        <%= link_to '新規登録', new_user_registration_path, class: 'font-bold text-blue-600 hover:underline' %>
+        または
+        <%= link_to 'ログイン', new_user_session_path, class: 'font-bold text-blue-600 hover:underline' %>
+        すると、閲覧履歴を永続的に保存できます（※この機能は将来的に実装予定です）。
+      </p>
+    </div>
+  <% end %>
+
+  <% if @viewed_questions.any? %>
+    <div class="space-y-4">
+      <% @viewed_questions.each do |question| %>
+        <div class="p-4 border rounded-lg shadow-sm bg-white hover:bg-gray-50">
+          <%= link_to question_path(question), class: 'block' do %>
+            <div class="font-semibold text-lg text-gray-900"><%= question.title_jp %></div>
+            <div class="text-sm text-gray-600"><%= question.title_en %></div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-center text-gray-500">まだ閲覧履歴はありません。</p>
+  <% end %>
+</div>

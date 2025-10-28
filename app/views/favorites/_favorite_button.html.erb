@@ -1,5 +1,5 @@
 <%= turbo_frame_tag dom_id(question, :favorite_button) do %>
-  <% if question.favorited_by?(current_user) %>
+  <% if question_favorited?(question) %>
     <%= button_to question_favorites_path(question), method: :delete, class: "btn btn-warning" do %>
       <i class="fas fa-star"></i> お気に入り解除
     <% end %>

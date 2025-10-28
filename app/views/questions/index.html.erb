@@ -44,9 +44,7 @@
           </button>
           <p class="text-lg mt-4 hidden" data-qa-card-target="japanese"><%= question.title_jp %></p>
           <div class="mt-4">
-            <% if user_signed_in? %>
-              <%= render 'favorites/favorite_button', question: question %>
-            <% end %>
+            <%= render 'favorites/favorite_button', question: question %>
           </div>
         </div>
       <% end %>

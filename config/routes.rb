@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
   resource :mypage, only: [:show]
+  resources :histories, only: [:index]
   resources :quiz_histories, only: [:show]
   resources :quizzes, path: 'quiz' do
     collection do
@@ -18,7 +19,11 @@ Rails.application.routes.draw do
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
   end
   get 'home/index'
-  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
+  devise_for :users, controllers: {
+    sessions: 'users/sessions',
+    registrations: 'users/registrations',
+    omniauth_callbacks: 'users/omniauth_callbacks'
+  }
   devise_scope :user do
     get "/users/sign_out" => "devise/sessions#destroy"
   end

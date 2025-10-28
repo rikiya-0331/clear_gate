@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_10_24_001224) do
+ActiveRecord::Schema[7.1].define(version: 2025_10_28_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -63,6 +63,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_24_001224) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["question_id"], name: "index_favorites_on_question_id"
+    t.index ["user_id", "question_id"], name: "index_favorites_on_user_id_and_question_id", unique: true
     t.index ["user_id"], name: "index_favorites_on_user_id"
   end
 
