@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_10_28_100000) do
+ActiveRecord::Schema[7.1].define(version: 2025_10_28_100001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -122,6 +122,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_28_100000) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "viewed_histories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.uuid "question_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["question_id"], name: "index_viewed_histories_on_question_id"
+    t.index ["user_id", "question_id"], name: "index_viewed_histories_on_user_id_and_question_id", unique: true
+    t.index ["user_id"], name: "index_viewed_histories_on_user_id"
+  end
+
   add_foreign_key "answer_choices", "questions"
   add_foreign_key "favorites", "questions"
   add_foreign_key "favorites", "users"
@@ -131,4 +141,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_28_100000) do
   add_foreign_key "quiz_results", "answer_choices", column: "selected_answer_choice_id"
   add_foreign_key "quiz_results", "questions"
   add_foreign_key "quiz_results", "quiz_histories"
+  add_foreign_key "viewed_histories", "questions"
+  add_foreign_key "viewed_histories", "users"
 end
