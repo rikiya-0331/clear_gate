@@ -11,6 +11,10 @@
         </li>
       <% end %>
     </ul>
+
+    <div class="mt-4 flex justify-center">
+      <%= paginate @favorite_questions, param_name: :favorite_question_page %>
+    </div>
   <% else %>
     <p class="text-gray-500">お気に入り登録した質問はまだありません。</p>
   <% end %>

@@ -1,0 +1,13 @@
+<div class="bg-white rounded-lg shadow-md p-6" data-controller="qa-card">
+  <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold mb-2 px-2.5 py-0.5 rounded-full"><%= question.category.name %></span>
+  <%= link_to question_path(question), class: "block" do %>
+    <h2 class="text-xl font-bold mb-2 hover:text-blue-600 transition duration-300"><%= question.title_en %></h2>
+  <% end %>
+  <button data-action="click->qa-card#toggle" data-qa-card-target="button" class="bg-gray-500 text-white font-bold py-2 px-4 rounded mt-2 hover:bg-gray-600 transition duration-300">
+    日本語訳を見る
+  </button>
+  <p class="text-lg mt-4 hidden" data-qa-card-target="japanese"><%= question.title_jp %></p>
+  <div class="mt-4">
+    <%= render 'favorites/favorite_button', question: question %>
+  </div>
+</div>
