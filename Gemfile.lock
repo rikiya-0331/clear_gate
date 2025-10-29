@@ -584,6 +584,7 @@ DEPENDENCIES
   google-cloud-text_to_speech
   jbuilder
   jsbundling-rails
+  kaminari
   letter_opener_web
   meta-tags
   omniauth-google-oauth2

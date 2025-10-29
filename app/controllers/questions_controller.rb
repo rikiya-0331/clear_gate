@@ -1,13 +1,23 @@
 class QuestionsController < ApplicationController
   def index
     @categories = Category.all
-    
+
+    # カテゴリによる絞り込み
+    base_scope = if params[:category_id].present?
+                   Question.where(category_id: params[:category_id])
+                 else
+                   Question.all
+                 end
+
     # Ransackの検索オブジェクトを作成
-    @q = Question.ransack(params[:q])
-    
-    # 検索結果を取得し、N+1問題を防ぐためにincludes(:category)を追加
-    # distinct: true は検索結果の重複を防ぐ
-    @questions = @q.result(distinct: true).includes(:category)
+    @q = base_scope.ransack(params[:q])
+
+    # 検索結果を取得し、N+1問題、ソート、ページネーションを適用
+    @questions = @q.result(distinct: true)
+                   .includes(:category)
+                   .order(category_id: :asc, created_at: :desc) # カテゴリ順、そして新しい順
+                   .page(params[:page])
+                   .per(10)
   end
 
   def show

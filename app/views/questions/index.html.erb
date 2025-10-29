@@ -1,55 +1,65 @@
-<div class="container mx-auto px-4 py-8" data-controller="filter">
+<div class="container mx-auto px-4 py-8">
   <h1 class="text-3xl font-bold mb-6 text-center">質問一覧</h1>
   <p class="text-center text-gray-600 mb-6">※「〇〇」には、あなたの旅行先の国名や地名を当てはめて考えてください。</p>
 
-  <%# 検索フォームの追加 %>
+  <%# 検索フォーム %>
   <div class="mb-8 max-w-lg mx-auto" data-controller="autocomplete" data-autocomplete-url-value="<%= autocomplete_questions_path %>">
     <%= search_form_for @q, url: questions_path, method: :get do |f| %>
-      <div class="flex relative"> <%# Added relative for positioning results %>
+      <div class="flex relative">
         <%= f.search_field :title_jp_or_title_en_cont,
                            placeholder: "キーワードで質問を検索...",
-                           class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm pr-10", # Added pr-10 for submit button space
+                           class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm pr-10",
                            data: { autocomplete_target: "input", action: "input->autocomplete#search" } %>
         <%= f.submit "検索", class: "ml-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
-        <%# Autocomplete results container - positioned absolutely below the input %>
         <div data-autocomplete-target="results" class="absolute z-10 w-full top-full left-0 mt-1"></div>
       </div>
     <% end %>
-    <% if params[:q].present? %>
+    <%# 検索後またはカテゴリ絞り込み後にリセットボタンを表示 %>
+    <% if params[:q].present? || params[:category_id].present? %>
       <div class="mt-4 text-center">
         <%= link_to "絞り込みをリセット", questions_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
       </div>
     <% end %>
   </div>
 
+  <%# カテゴリ絞り込みリンク %>
   <div class="flex flex-wrap justify-center gap-2 mb-8">
-    <button data-action="click->filter#filter" data-category-id="all" class="bg-primary text-white font-bold py-2 px-4 rounded-full hover:opacity-90 transition duration-300">全て表示</button>
+    <%= link_to "全て表示", questions_path, class: "text-white font-bold py-2 px-4 rounded-full transition duration-300 #{params[:category_id].blank? ? 'bg-primary' : 'bg-gray-400 hover:bg-gray-500'}" %>
     <% @categories.each do |category| %>
-      <button data-action="click->filter#filter" data-category-id="<%= category.id %>" class="bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-full hover:bg-gray-300 transition duration-300">
-        <%= category.name %>
-      </button>
+      <%= link_to category.name, questions_path(category_id: category.id), class: "font-bold py-2 px-4 rounded-full transition duration-300 #{params[:category_id].to_i == category.id ? 'bg-primary text-white' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}" %>
     <% end %>
   </div>
 
-  <div id="questions-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  <%# 質問リスト %>
+  <div id="questions-container">
     <% if @questions.any? %>
-      <% @questions.each do |question| %>
-        <div data-filter-target="item" data-category-id="<%= question.category_id %>" class="bg-white rounded-lg shadow-md p-6" data-controller="qa-card">
-          <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold mb-2 px-2.5 py-0.5 rounded-full"><%= question.category.name %></span>
-          <%= link_to question_path(question), class: "block" do %>
-            <h2 class="text-xl font-bold mb-2 hover:text-blue-600 transition duration-300"><%= question.title_en %></h2>
-          <% end %>
-          <button data-action="click->qa-card#toggle" data-qa-card-target="button" class="bg-gray-500 text-white font-bold py-2 px-4 rounded mt-2 hover:bg-gray-600 transition duration-300">
-            日本語訳を見る
-          </button>
-          <p class="text-lg mt-4 hidden" data-qa-card-target="japanese"><%= question.title_jp %></p>
-          <div class="mt-4">
-            <%= render 'favorites/favorite_button', question: question %>
+      <%# 「全て表示」の時だけカテゴリでグループ化 %>
+      <% if params[:category_id].blank? %>
+        <% @questions.group_by(&:category).each do |category, questions_in_category| %>
+          <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4 border-b-2 border-primary pb-2"><%= category.name %></h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <% questions_in_category.each do |question| %>
+                <%= render 'questions/question_card', question: question %>
+              <% end %>
+            </div>
           </div>
+        <% end %>
+      <% else %>
+        <%# 特定のカテゴリで絞り込んでいる場合は、そのまま一覧表示 %>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <% @questions.each do |question| %>
+            <%= render 'questions/question_card', question: question %>
+          <% end %>
         </div>
       <% end %>
     <% else %>
       <p class="text-center text-gray-600 col-span-full">該当する質問は見つかりませんでした。</p>
     <% end %>
+  </div>
+
+  <%# ページネーション %>
+  <div class="mt-8 flex justify-center">
+    <%= paginate @questions %>
   </div>
 </div>

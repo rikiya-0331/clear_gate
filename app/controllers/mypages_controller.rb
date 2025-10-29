@@ -1,19 +1,35 @@
 class MypagesController < ApplicationController
   def show
     if user_signed_in?
-      @quiz_histories = current_user.quiz_histories.order(created_at: :desc)
-      @favorite_questions = current_user.favorite_questions.order('favorites.created_at DESC')
+      load_user_data
     else
-      # ゲストユーザーの場合、セッションからお気に入りの質問IDを取得
-      if session[:favorite_question_ids].present?
-        @favorite_questions = Question.where(id: session[:favorite_question_ids])
-        # セッションのID順に並び替え
-        @favorite_questions = @favorite_questions.sort_by { |q| session[:favorite_question_ids].index(q.id) }
-      else
-        @favorite_questions = []
-      end
-      # ゲストユーザーにはクイズ履歴はないので空の配列をセット
-      @quiz_histories = []
+      load_guest_data
     end
+  end
+
+  private
+
+  def load_user_data
+    @quiz_histories = current_user.quiz_histories.order(created_at: :desc)
+                                  .page(params[:quiz_history_page]).per(5)
+    @favorite_questions = current_user.favorite_questions.order('favorites.created_at DESC')
+                                      .page(params[:favorite_question_page]).per(5)
+  end
+
+  def load_guest_data
+    # ゲストユーザーの場合、セッションからお気に入りの質問IDを取得
+    favorite_ids = session[:favorite_question_ids] || []
+    favorites = if favorite_ids.present?
+                  Question.where(id: favorite_ids)
+                          .sort_by { |q| favorite_ids.index(q.id) }
+                else
+                  []
+                end
+    @favorite_questions = Kaminari.paginate_array(favorites)
+                                  .page(params[:favorite_question_page]).per(5)
+
+    # ゲストユーザーにはクイズ履歴はないので空のページネーションオブジェクトをセット
+    @quiz_histories = Kaminari.paginate_array([])
+                              .page(params[:quiz_history_page]).per(5)
   end
 end
