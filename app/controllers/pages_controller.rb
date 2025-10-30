@@ -4,4 +4,8 @@ class PagesController < ApplicationController
   def home
     # app/views/pages/home.html.erb をレンダリングします
   end
+
+  def terms; end
+
+  def privacy; end
 end

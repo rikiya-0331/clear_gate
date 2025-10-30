@@ -36,6 +36,9 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "pages#home"
 
+  get "terms" => "pages#terms", as: :terms
+  get "privacy" => "pages#privacy", as: :privacy
+
   resources :questions, only: [:index, :show] do
     member do
       get :audio
