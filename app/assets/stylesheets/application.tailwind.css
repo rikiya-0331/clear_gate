@@ -4,3 +4,9 @@
 }
 
 @import "tailwindcss";
+
+@layer utilities {
+  .font-playball {
+    font-family: 'Playball', cursive;
+  }
+}
