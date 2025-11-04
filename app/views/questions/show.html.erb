@@ -12,9 +12,9 @@
                     <div class="mb-6">
                       <p class="text-lg font-semibold text-gray-700">日本語訳:</p>
                       <p class="text-xl text-gray-900"><%= @question.title_jp %></p>
-                    </div>    <div class="mt-8 text-center space-x-4">
-      <%= link_to("マイページに戻る", mypage_path, class: "inline-block bg-primary hover:opacity-90 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out") %>
-      <%= link_to("質問一覧に戻る", questions_path, class: "inline-block bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out") %>
+                    </div>    <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+      <%= link_to("マイページに戻る", mypage_path, class: "w-full sm:w-auto bg-primary hover:opacity-90 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out text-center") %>
+      <%= link_to("質問一覧に戻る", questions_path, class: "w-full sm:w-auto bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out text-center") %>
     </div>
   </div>
 </div>
