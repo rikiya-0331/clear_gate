@@ -32,7 +32,7 @@
             <% @quiz_histories.each do |quiz_history| %>
               <tr>
                 <td class="px-6 py-4 whitespace-nowrap"><%= quiz_history.category.name %></td>
-                <td class="px-6 py-4 whitespace-nowrap"><%= l(quiz_history.created_at, format: :long) %></td>
+                <td class="px-6 py-4 whitespace-nowrap"><%= l(quiz_history.created_at, format: :short) %></td>
                 <td class="px-6 py-4 whitespace-nowrap"><%= quiz_history.correct_answers %> / <%= quiz_history.total_questions %></td>
                 <td class="px-6 py-4 whitespace-nowrap"><%= quiz_history.score %></td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

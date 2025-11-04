@@ -11,6 +11,7 @@ module Myapp
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.1
     config.i18n.default_locale = :ja
+    config.time_zone = "Tokyo"
 
     config.generators do |g|
       g.orm :active_record, primary_key_type: :uuid
