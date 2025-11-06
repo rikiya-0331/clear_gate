@@ -17,9 +17,6 @@ module Myapp
       g.orm :active_record, primary_key_type: :uuid
     end
 
-    if Rails.env.production?
-      config.middleware.use Rack::GoogleAnalytics, tracker: ENV["GOOGLE_ANALYTICS_ID"]
-    end
 
         # Configuration for the application, engines, and railties goes here.
     # Configuration for the application, engines, and railties goes here.
